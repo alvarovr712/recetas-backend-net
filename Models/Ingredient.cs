@@ -8,7 +8,7 @@ namespace RecetasAPINet.Models
         public Guid Id { get; set; }
 
         public string Name { get; set; } = string.Empty;
-        public string Unit { get; set; } = string.Empty;
+       
 
         // Relación con RecipeIngredient (1:N)
         public List<RecipeIngredient> Recipes { get; set; } = new();
