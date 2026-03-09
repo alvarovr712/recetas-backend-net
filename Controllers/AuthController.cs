@@ -80,9 +80,9 @@ namespace RecetasAPINet.Controllers
                 return Ok(info);
 
             }
-            catch
+            catch (Exception ex)
             {
-                return Unauthorized("Token Inválido");
+                return Unauthorized($"Token Inválido: {ex.Message}");
             }
         }
 

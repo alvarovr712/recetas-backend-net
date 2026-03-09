@@ -46,7 +46,7 @@ namespace RecetasAPINet.Security
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_settings.Key);
 
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -55,14 +55,21 @@ namespace RecetasAPINet.Security
                 ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
 
-            var jwtToken = (JwtSecurityToken)validatedToken;
+            var userIdString = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                            ?? principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+                            
+            var username = principal.FindFirst("username")?.Value 
+                        ?? principal.FindFirst(ClaimTypes.Name)?.Value;
+                        
+            var roleString = principal.FindFirst("role")?.Value 
+                          ?? principal.FindFirst(ClaimTypes.Role)?.Value;
 
             return new TokenInfoDTO
             {
-                UserId = int.Parse(jwtToken.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value),
-                Username = jwtToken.Claims.First(c => c.Type == "username").Value,
-                Role = Enum.Parse<Role>(jwtToken.Claims.First(c => c.Type == "role").Value),
-                Expires = jwtToken.ValidTo
+                UserId = int.TryParse(userIdString, out var uid) ? uid : 0,
+                Username = username ?? string.Empty,
+                Role = Enum.TryParse<Role>(roleString, true, out var role) ? role : Role.User,
+                Expires = validatedToken.ValidTo
             };
         }
     }
