@@ -1,0 +1,6 @@
+@recetasAPINet_HostAddress = http://localhost:5036
+
+GET {{recetasAPINet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
