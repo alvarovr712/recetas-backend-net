@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using RecetasAPINet.Data;
 using RecetasAPINet.Models;
 using RecetasAPINet.DTOs;
+using RecetasAPINet.Security;
 
 
 namespace RecetasAPINet.Services
@@ -11,11 +12,13 @@ namespace RecetasAPINet.Services
     {
         private readonly RecetasDbContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IJwtService _jwtService;
 
-        public AuthService(RecetasDbContext context, IPasswordHasher<User> passwordHasher)
+        public AuthService(RecetasDbContext context, IPasswordHasher<User> passwordHasher, IJwtService iJwtService)
         {
             _context = context;
             _passwordHasher = passwordHasher;
+            _jwtService = iJwtService;
         }
          public async Task<User> Login(LoginRequest loginRequest)
         {
@@ -37,6 +40,16 @@ namespace RecetasAPINet.Services
 
             return user;
 
+        }
+
+        public async Task Logout()
+        {
+            await Task.CompletedTask;
+        }
+
+        public TokenInfoDTO TokenInfo(string token)
+        {
+            return _jwtService.ValidateToken(token);
         }
     }
 }

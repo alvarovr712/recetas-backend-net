@@ -4,6 +4,8 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RecetasAPINet.Models;
+using RecetasAPINet.Enums;
+using RecetasAPINet.DTOs;
 
 namespace RecetasAPINet.Security
 {
@@ -37,6 +39,31 @@ namespace RecetasAPINet.Security
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public TokenInfoDTO ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_settings.Key);
+
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            var jwtToken = (JwtSecurityToken)validatedToken;
+
+            return new TokenInfoDTO
+            {
+                UserId = int.Parse(jwtToken.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value),
+                Username = jwtToken.Claims.First(c => c.Type == "username").Value,
+                Role = Enum.Parse<Role>(jwtToken.Claims.First(c => c.Type == "role").Value),
+                Expires = jwtToken.ValidTo
+            };
         }
     }
 }
