@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using RecetasAPINet.Enums;
+
 namespace RecetasAPINet.Models
 {
     public class Recipe
@@ -9,12 +11,13 @@ namespace RecetasAPINet.Models
 
         // Relación con User (creador)
         public Guid UserId { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         public User? User { get; set; }
 
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
-        public string Type { get; set; } = string.Empty; // o enum si lo usas
+        public RecipeType Type { get; set; } 
         public int PrepTime { get; set; }
         public int Servings { get; set; }
         public string Image { get; set; } = string.Empty;
@@ -27,6 +30,7 @@ namespace RecetasAPINet.Models
         public List<Step> Steps { get; set; } = new();
 
         // Relación con favoritos (N:N)
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<UserFavorite> FavoritedBy { get; set; } = new();
     }
 }

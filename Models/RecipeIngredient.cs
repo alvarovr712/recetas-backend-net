@@ -12,6 +12,8 @@ namespace RecetasAPINet.Models
 
         // Relación con Recipe
         public Guid RecipeId { get; set; }
+        
+        [System.Text.Json.Serialization.JsonIgnore]
         public Recipe? Recipe { get; set; }
 
         public double Quantity { get; set; }

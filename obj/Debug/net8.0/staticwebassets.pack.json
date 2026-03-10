@@ -1,0 +1,29 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\3fc9c89e-f039-48ae-8339-d5f72f2f45d1.jpg",
+      "PackagePath": "staticwebassets\\ImageRecipes\\3fc9c89e-f039-48ae-8339-d5f72f2f45d1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\ca7fd007-e513-46ea-b509-58ec9fcd8a7f.jpg",
+      "PackagePath": "staticwebassets\\ImageRecipes\\ca7fd007-e513-46ea-b509-58ec9fcd8a7f.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.recetasAPINet.props",
+      "PackagePath": "build\\recetasAPINet.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.recetasAPINet.props",
+      "PackagePath": "buildMultiTargeting\\recetasAPINet.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.recetasAPINet.props",
+      "PackagePath": "buildTransitive\\recetasAPINet.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.recetasAPINet.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

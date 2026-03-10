@@ -11,6 +11,7 @@ namespace RecetasAPINet.Models
        
 
         // Relación con RecipeIngredient (1:N)
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<RecipeIngredient> Recipes { get; set; } = new();
     }
 }

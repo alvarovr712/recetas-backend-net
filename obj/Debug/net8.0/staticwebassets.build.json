@@ -1,11 +1,58 @@
 {
   "Version": 1,
-  "Hash": "UHxYdo1MTqmenh6RXMh+zORGmsSTce4kAe/B4c5SUHo=",
+  "Hash": "nmkyBojhA3JDCnbIUuItXNIy3FLxLnOFWSQpjC1zqwo=",
   "Source": "recetasAPINet",
   "BasePath": "_content/recetasAPINet",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "recetasAPINet\\wwwroot",
+      "Source": "recetasAPINet",
+      "ContentRoot": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\",
+      "BasePath": "_content/recetasAPINet",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\3fc9c89e-f039-48ae-8339-d5f72f2f45d1.jpg",
+      "SourceId": "recetasAPINet",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\",
+      "BasePath": "_content/recetasAPINet",
+      "RelativePath": "ImageRecipes/3fc9c89e-f039-48ae-8339-d5f72f2f45d1.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ImageRecipes\\3fc9c89e-f039-48ae-8339-d5f72f2f45d1.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\ca7fd007-e513-46ea-b509-58ec9fcd8a7f.jpg",
+      "SourceId": "recetasAPINet",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\",
+      "BasePath": "_content/recetasAPINet",
+      "RelativePath": "ImageRecipes/ca7fd007-e513-46ea-b509-58ec9fcd8a7f.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ImageRecipes\\ca7fd007-e513-46ea-b509-58ec9fcd8a7f.jpg"
+    }
+  ]
 }

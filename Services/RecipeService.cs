@@ -1,6 +1,9 @@
 using Microsoft.Extensions.Configuration.UserSecrets;
 using RecetasAPINet.Data;
 using RecetasAPINet.Models;
+using RecetasAPINet.Repositories;
+
+using RecetasAPINet.Enums;
 
 namespace RecetasAPINet.Services
 {
@@ -29,7 +32,7 @@ namespace RecetasAPINet.Services
                 UserId = userId,
                 Title = request.Title,
                 Description = request.Description,
-                Type = request.Type,
+                Type = Enum.TryParse<RecipeType>(request.Type, true, out var recipeType) ? recipeType : RecipeType.Principal,
                 PrepTime = request.PrepTime,
                 Servings = request.Servings,
                 Image = request.Image,

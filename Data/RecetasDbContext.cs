@@ -22,6 +22,7 @@ namespace RecetasAPINet.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum<Role>("role_enum", nameTranslator: new Npgsql.NameTranslation.NpgsqlNullNameTranslator());
+            modelBuilder.HasPostgresEnum<RecipeType>("recipe_type_enum", nameTranslator: new Npgsql.NameTranslation.NpgsqlNullNameTranslator());
 
             // Tabla user_favorites con clave compuesta
             modelBuilder.Entity<UserFavorite>()
@@ -45,7 +46,7 @@ namespace RecetasAPINet.Data
 
             // Tabla steps
             modelBuilder.Entity<Step>()
-                .ToTable("recipe_steps");
+                .ToTable("steps");
 
             base.OnModelCreating(modelBuilder);
         }

@@ -14,6 +14,7 @@ namespace RecetasAPINet.Extensions
             // Crear DataSource con mapeo de enums
             var dataSourceBuilder = new NpgsqlDataSourceBuilder(configuration.GetConnectionString("DefaultConnection"));
             dataSourceBuilder.MapEnum<Role>("role_enum", new Npgsql.NameTranslation.NpgsqlNullNameTranslator());
+            dataSourceBuilder.MapEnum<RecipeType>("recipe_type_enum", new Npgsql.NameTranslation.NpgsqlNullNameTranslator());
             var dataSource = dataSourceBuilder.Build();
 
             // Registrar DbContext

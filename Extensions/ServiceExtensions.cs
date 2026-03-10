@@ -20,6 +20,7 @@ namespace RecetasAPINet.Extensions
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IIngredientService, IngredientService>();
             services.AddScoped<IRecipeService,RecipeService>();
+            services.AddScoped<IImageService, ImageService>();
 
             //Repositorios
             services.AddScoped<IIngredientRepository, IngredientRepository>();

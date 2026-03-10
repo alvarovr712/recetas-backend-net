@@ -1,7 +1,10 @@
 using RecetasAPINet.Models;
 
-public interface IRecipeIngredientRepository
+namespace RecetasAPINet.Repositories
 {
-    Task AddRangeAsync(List<RecipeIngredient> ingredients);
-    
+    public interface IRecipeIngredientRepository
+    {
+        Task AddRangeAsync(List<RecipeIngredient> ingredients);
+
+    }
 }

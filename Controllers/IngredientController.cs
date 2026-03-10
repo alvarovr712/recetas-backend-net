@@ -5,6 +5,7 @@ namespace RecetasAPINet.Controllers
 {
     [ApiController]
     [Route("ingredients")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class IngredientController : ControllerBase
     {
         private readonly IIngredientService _service;

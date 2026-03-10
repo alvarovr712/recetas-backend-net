@@ -21,8 +21,11 @@ namespace RecetasAPINet.Models
         public bool Enabled { get; set; }
 
         // Relaciones
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<Recipe> Recipes { get; set; } = new();
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<UserFavorite> Favorites { get; set; } = new();
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<Session> Sessions { get; set; } = new();
     }
 }

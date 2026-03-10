@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Base de datos (DbContext + enums + snake_case)
 builder.Services.AddDatabase(builder.Configuration);
 
+builder.Services.AddHttpContextAccessor();
 // Servicios de la aplicación (UserService, AuthService, JwtService, PasswordHasher)
 builder.Services.AddApplicationServices();
 
@@ -45,6 +46,7 @@ app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSwaggerDocumentation(app.Environment);
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();

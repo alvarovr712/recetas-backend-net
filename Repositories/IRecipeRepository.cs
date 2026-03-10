@@ -1,6 +1,8 @@
 using RecetasAPINet.Models;
-
-public interface IRecipeRepository
+namespace RecetasAPINet.Repositories
 {
-    Task AddAsync(Recipe recipe);
+    public interface IRecipeRepository
+    {
+        Task AddAsync(Recipe recipe);
+    }
 }

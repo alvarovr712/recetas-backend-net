@@ -1,6 +1,9 @@
 using RecetasAPINet.Models;
 
-public interface IStepRepository
+namespace RecetasAPINet.Repositories
 {
-    Task AddRangeAsync(List<Step> steps);
+    public interface IStepRepository
+    {
+        Task AddRangeAsync(List<Step> steps);
+    }
 }

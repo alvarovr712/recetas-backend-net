@@ -1,17 +1,21 @@
 using RecetasAPINet.Data;
 using RecetasAPINet.Models;
 
-public class RecipeIngredientRepository : IRecipeIngredientRepository
+namespace RecetasAPINet.Repositories
 {
-    private readonly RecetasDbContext _context;
 
-    public RecipeIngredientRepository(RecetasDbContext context)
+    public class RecipeIngredientRepository : IRecipeIngredientRepository
     {
-        _context = context;
-    }
+        private readonly RecetasDbContext _context;
 
-    public async Task AddRangeAsync(List<RecipeIngredient> ingredients)
-    {
-        await _context.RecipeIngredients.AddRangeAsync(ingredients);
+        public RecipeIngredientRepository(RecetasDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task AddRangeAsync(List<RecipeIngredient> ingredients)
+        {
+            await _context.RecipeIngredients.AddRangeAsync(ingredients);
+        }
     }
 }
