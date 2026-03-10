@@ -12,5 +12,7 @@ namespace RecetasAPINet.Models
 
         public int StepOrder { get; set; }
         public string Instruction { get; set; } = string.Empty;
+
+        public string Image {get; set;} = string.Empty;
     }
 }

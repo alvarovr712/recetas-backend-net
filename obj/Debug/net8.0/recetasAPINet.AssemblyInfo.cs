@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("recetasAPINet")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e9c95f6df62496ccc463469afa86776bb0a59d33")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d25a56507b84eae302af9d17344ba2b0116c5d7f")]
 [assembly: System.Reflection.AssemblyProductAttribute("recetasAPINet")]
 [assembly: System.Reflection.AssemblyTitleAttribute("recetasAPINet")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

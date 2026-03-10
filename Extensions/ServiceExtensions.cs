@@ -19,9 +19,13 @@ namespace RecetasAPINet.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IIngredientService, IngredientService>();
+            services.AddScoped<IRecipeService,RecipeService>();
 
             //Repositorios
             services.AddScoped<IIngredientRepository, IngredientRepository>();
+            services.AddScoped<IRecipeIngredientRepository, RecipeIngredientRepository>();
+            services.AddScoped<IRecipeRepository,RecipeRepository>();
+            services.AddScoped<IStepRepository,StepRepository>();
 
             return services;
         }
