@@ -21,7 +21,7 @@ namespace RecetasAPINet.Services
             _recipeRepo = recipeRepo;
             _recipeIngredientRepo = recipeIngredientRepo;
             _stepRepo = stepRepo;
-        
+
         }
 
         public async Task<Recipe> CrearRecetaAsync(CreateRecipeRequest request, Guid userId)
@@ -40,7 +40,7 @@ namespace RecetasAPINet.Services
             };
 
             await _recipeRepo.AddAsync(recipe);
-            
+
             var ingredients = request.Ingredients.Select(item => new RecipeIngredient
             {
                 Id = Guid.NewGuid(),
@@ -66,6 +66,11 @@ namespace RecetasAPINet.Services
             await _context.SaveChangesAsync();
 
             return recipe;
+        }
+
+        public async Task<List<RecipeCardDto>> GetMisRecetasAsync(Guid userId)
+        {
+            return await _recipeRepo.GetRecipesByUserIdAsync(userId);
         }
     }
 }

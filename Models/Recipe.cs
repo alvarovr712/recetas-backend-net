@@ -17,11 +17,14 @@ namespace RecetasAPINet.Models
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
-        public RecipeType Type { get; set; } 
+        public RecipeType Type { get; set; }
         public int PrepTime { get; set; }
         public int Servings { get; set; }
         public string Image { get; set; } = string.Empty;
         public bool Enabled { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         // Relación con ingredientes
         public List<RecipeIngredient> Ingredients { get; set; } = new();
