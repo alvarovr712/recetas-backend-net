@@ -5,5 +5,7 @@ namespace RecetasAPINet.Repositories
     {
         Task AddAsync(Recipe recipe);
         Task<List<RecipeCardDto>> GetRecipesByUserIdAsync(Guid userId);
+        Task<Recipe?> GetByIdAsync(Guid id);
+
     }
 }

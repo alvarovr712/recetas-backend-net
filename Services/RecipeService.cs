@@ -14,13 +14,16 @@ namespace RecetasAPINet.Services
         private readonly IRecipeIngredientRepository _recipeIngredientRepo;
         private readonly IStepRepository _stepRepo;
 
+        private readonly IUserRepository _userRepo;
+
         public RecipeService(RecetasDbContext context, IRecipeRepository recipeRepo, IRecipeIngredientRepository recipeIngredientRepo,
-        IStepRepository stepRepo)
+        IStepRepository stepRepo, IUserRepository userRepo)
         {
             _context = context;
             _recipeRepo = recipeRepo;
             _recipeIngredientRepo = recipeIngredientRepo;
             _stepRepo = stepRepo;
+            _userRepo = userRepo;
 
         }
 
@@ -72,5 +75,63 @@ namespace RecetasAPINet.Services
         {
             return await _recipeRepo.GetRecipesByUserIdAsync(userId);
         }
+
+        public async Task<RecipeDetailDto?> GetRecipeDetailAsync(Guid recipeId)
+        {
+            // 1. Buscar la receta
+            var recipe = await _recipeRepo.GetByIdAsync(recipeId);
+            var user = await _userRepo.GetByIdAsync(recipe.UserId);
+
+            if (recipe == null)
+                return null;
+
+            // 2. Construir el DTO SOLO con los datos de la receta
+            var dto = new RecipeDetailDto
+            {
+                Id = recipe.Id,
+                Image = recipe.Image ?? string.Empty,
+                Title = recipe.Title ?? string.Empty,
+                Type = recipe.Type, // enum RecipeType
+                PrepTime = recipe.PrepTime,
+                Servings = recipe.Servings,
+                Description = recipe.Description ?? string.Empty,
+
+
+                UserName = user?.Username ?? string.Empty,
+                UserImage = user?.Image ?? string.Empty,
+
+
+
+
+                // estos se rellenarán en el paso 3 y 4
+                Ingredients = new List<RecipeIngredientDto>(),
+                Steps = new List<RecipeStepDto>()
+            };
+
+            var ingredients = await _recipeIngredientRepo.GetByRecipeIdAsync(recipeId);
+
+            dto.Ingredients = ingredients
+                .Select(i => new RecipeIngredientDto
+                {
+                    Quantity = i.Quantity.ToString(),
+                    Unit = i.Unit ?? string.Empty
+                })
+                .ToList();
+
+            var steps = await _stepRepo.GetByRecipeIdAsync(recipeId);
+
+            dto.Steps = steps
+                .OrderBy(s => s.StepOrder)
+                .Select(s => new RecipeStepDto
+                {
+                    StepOrder = s.StepOrder,
+                    Instruction = s.Instruction ?? string.Empty,
+                    Image = s.Image ?? string.Empty
+                })
+                .ToList();
+
+            return dto;
+        }
+
     }
 }

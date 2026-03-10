@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using RecetasAPINet.Data;
 using RecetasAPINet.Models;
 
@@ -17,5 +18,13 @@ namespace RecetasAPINet.Repositories
         {
             await _context.RecipeIngredients.AddRangeAsync(ingredients);
         }
+
+        public async Task<List<RecipeIngredient>> GetByRecipeIdAsync(Guid recipeId)
+        {
+            return await _context.RecipeIngredients
+                .Where(ri => ri.RecipeId == recipeId)
+                .ToListAsync();
+        }
+
     }
 }

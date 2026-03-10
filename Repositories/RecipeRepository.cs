@@ -32,5 +32,12 @@ namespace RecetasAPINet.Repositories
                 Type = r.Type
             }).ToListAsync();
         }
+
+        public async Task<Recipe?> GetByIdAsync(Guid id)
+        {
+            return await _context.Recipes
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
     }
 }

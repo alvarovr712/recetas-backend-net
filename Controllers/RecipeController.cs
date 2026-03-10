@@ -45,5 +45,16 @@ namespace RecetasAPINet.Controllers
             var recetas = await _recipeService.GetMisRecetasAsync(userId);
             return Ok(recetas);
         }
+
+        [HttpGet("detalle/{id}")]
+        public async Task<ActionResult<RecipeDetailDto>> GetRecipeDetail(Guid id)
+        {
+            var result = await _recipeService.GetRecipeDetailAsync(id);
+
+            if (result == null)
+                return NotFound("Receta no encontrada");
+
+            return Ok(result);
+        }
     }
 }

@@ -5,6 +5,8 @@ namespace RecetasAPINet.Repositories
     public interface IRecipeIngredientRepository
     {
         Task AddRangeAsync(List<RecipeIngredient> ingredients);
+        Task<List<RecipeIngredient>> GetByRecipeIdAsync(Guid recipeId);
+
 
     }
 }
