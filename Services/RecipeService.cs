@@ -80,10 +80,12 @@ namespace RecetasAPINet.Services
         {
             // 1. Buscar la receta
             var recipe = await _recipeRepo.GetByIdAsync(recipeId);
-            var user = await _userRepo.GetByIdAsync(recipe.UserId);
+            
 
             if (recipe == null)
                 return null;
+
+            var user = await _userRepo.GetByIdAsync(recipe.UserId);
 
             // 2. Construir el DTO SOLO con los datos de la receta
             var dto = new RecipeDetailDto
@@ -113,6 +115,7 @@ namespace RecetasAPINet.Services
             dto.Ingredients = ingredients
                 .Select(i => new RecipeIngredientDto
                 {
+                    Name = i.Ingredient?.Name ?? string.Empty,
                     Quantity = i.Quantity.ToString(),
                     Unit = i.Unit ?? string.Empty
                 })

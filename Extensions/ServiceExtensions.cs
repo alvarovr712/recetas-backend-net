@@ -27,6 +27,7 @@ namespace RecetasAPINet.Extensions
             services.AddScoped<IRecipeIngredientRepository, RecipeIngredientRepository>();
             services.AddScoped<IRecipeRepository,RecipeRepository>();
             services.AddScoped<IStepRepository,StepRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }
