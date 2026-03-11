@@ -79,7 +79,7 @@ namespace RecetasAPINet.Services
             var recetas = await _recipeRepo.GetRecipesByUserIdAsync(userId);
 
             return recetas
-                .Where(r => r.Enabled) 
+                .Where(r => r.Enabled)
                 .Select(r => new RecipeCardDto
                 {
                     Id = r.Id,
@@ -154,12 +154,24 @@ namespace RecetasAPINet.Services
             return dto;
         }
 
-        public async Task<List<RecipeCardDto>> GetAllRecetasAsync(Guid userId)
+        public async Task<List<RecipeCardDto>> GetAllRecetasAsync(Guid userId, string? category = null)
         {
             var recetas = await _recipeRepo.GetAll();
 
+            // 1. Solo recetas habilitadas
+            recetas = recetas.Where(r => r.Enabled).ToList();
+
+            // 2. Filtrar por categoría si viene
+            if (!string.IsNullOrEmpty(category) && category != "Todo")
+            {
+                if (Enum.TryParse<RecipeType>(category, out var typeEnum))
+                {
+                    recetas = recetas.Where(r => r.Type == typeEnum).ToList();
+                }
+            }
+
+            // 3. Mapear a DTO
             return recetas
-                .Where(r => r.Enabled)
                 .Select(r => new RecipeCardDto
                 {
                     Id = r.Id,
@@ -172,6 +184,7 @@ namespace RecetasAPINet.Services
                 })
                 .ToList();
         }
+
 
 
 
@@ -224,7 +237,7 @@ namespace RecetasAPINet.Services
                     Title = r.Title ?? string.Empty,
                     Description = r.Description ?? string.Empty,
                     Type = r.Type,
-                    IsFavorite = true 
+                    IsFavorite = true
                 })
                 .ToList();
         }

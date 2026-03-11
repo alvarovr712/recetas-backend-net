@@ -69,7 +69,7 @@ namespace RecetasAPINet.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult<List<RecipeCardDto>>> GetAll()
+        public async Task<ActionResult<List<RecipeCardDto>>> GetAll([FromQuery] string? category)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
                               ?? User.FindFirst("id");
@@ -79,7 +79,7 @@ namespace RecetasAPINet.Controllers
 
             Guid userId = Guid.Parse(userIdClaim.Value);
 
-            var recetas = await _recipeService.GetAllRecetasAsync(userId);
+            var recetas = await _recipeService.GetAllRecetasAsync(userId, category);
             return Ok(recetas);
         }
 
