@@ -74,12 +74,24 @@ namespace RecetasAPINet.Services
             return recipe;
         }
 
-        public async Task<List<RecipeCardDto>> GetMisRecetasAsync(Guid userId)
+        public async Task<List<RecipeCardDto>> GetMisRecetasAsync(Guid userId, string? category = null)
         {
             var recetas = await _recipeRepo.GetRecipesByUserIdAsync(userId);
 
+            // 1. Solo habilitadas
+            recetas = recetas.Where(r => r.Enabled).ToList();
+
+            // 2. Filtrar por categoría si viene
+            if (!string.IsNullOrEmpty(category) && category != "Todo")
+            {
+                if (Enum.TryParse<RecipeType>(category, out var typeEnum))
+                {
+                    recetas = recetas.Where(r => r.Type == typeEnum).ToList();
+                }
+            }
+
+            
             return recetas
-                .Where(r => r.Enabled)
                 .Select(r => new RecipeCardDto
                 {
                     Id = r.Id,
@@ -92,6 +104,7 @@ namespace RecetasAPINet.Services
                 })
                 .ToList();
         }
+
 
 
 
@@ -170,7 +183,7 @@ namespace RecetasAPINet.Services
                 }
             }
 
-            // 3. Mapear a DTO
+
             return recetas
                 .Select(r => new RecipeCardDto
                 {
@@ -210,37 +223,46 @@ namespace RecetasAPINet.Services
             return true;
         }
 
-        public async Task<List<RecipeCardDto>> GetFavoritasAsync(Guid userId)
+        public async Task<List<RecipeCardDto>> GetFavoritasAsync(Guid userId, string? category = null)
+{
+    // 1. Obtener favoritos del usuario
+    var favoritos = await _userFavoriteRepo.GetByUserIdAsync(userId);
+
+    if (!favoritos.Any())
+        return new List<RecipeCardDto>();
+
+    // 2. IDs de recetas favoritas
+    var recipeIds = favoritos.Select(f => f.RecipeId).ToList();
+
+    // 3. Obtener recetas
+    var recetas = await _recipeRepo.GetByIdsAsync(recipeIds);
+
+    // 4. Solo habilitadas
+    recetas = recetas.Where(r => r.Enabled).ToList();
+
+    // 5. Filtrar por categoría si viene
+    if (!string.IsNullOrEmpty(category) && category != "Todo")
+    {
+        if (Enum.TryParse<RecipeType>(category, out var typeEnum))
         {
-            // 1. Obtener favoritos del usuario
-            var favoritos = await _userFavoriteRepo.GetByUserIdAsync(userId);
-
-            // Si no tiene favoritos, devolvemos lista vacía
-            if (!favoritos.Any())
-                return new List<RecipeCardDto>();
-
-            // 2. Obtener los IDs de recetas favoritas
-            var recipeIds = favoritos.Select(f => f.RecipeId).ToList();
-
-            // 3. Obtener las recetas correspondientes
-            var recetas = await _recipeRepo.GetByIdsAsync(recipeIds);
-
-            // 4. Filtrar solo las habilitadas
-            recetas = recetas.Where(r => r.Enabled).ToList();
-
-            // 5. Construir DTOs
-            return recetas
-                .Select(r => new RecipeCardDto
-                {
-                    Id = r.Id,
-                    Image = r.Image ?? string.Empty,
-                    Title = r.Title ?? string.Empty,
-                    Description = r.Description ?? string.Empty,
-                    Type = r.Type,
-                    IsFavorite = true
-                })
-                .ToList();
+            recetas = recetas.Where(r => r.Type == typeEnum).ToList();
         }
+    }
+
+    // 6. Mapear DTOs
+    return recetas
+        .Select(r => new RecipeCardDto
+        {
+            Id = r.Id,
+            Image = r.Image ?? string.Empty,
+            Title = r.Title ?? string.Empty,
+            Description = r.Description ?? string.Empty,
+            Type = r.Type,
+            IsFavorite = true
+        })
+        .ToList();
+}
+
 
 
 

@@ -31,9 +31,8 @@ namespace RecetasAPINet.Controllers
             return Ok(recipe);
 
         }
-
         [HttpGet("mis-recetas")]
-        public async Task<ActionResult<IEnumerable<RecipeCardDto>>> GetMisRecetas()
+        public async Task<ActionResult<IEnumerable<RecipeCardDto>>> GetMisRecetas([FromQuery] string? category)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
                               ?? User.FindFirst("id");
@@ -43,9 +42,10 @@ namespace RecetasAPINet.Controllers
 
             Guid userId = Guid.Parse(userIdClaim.Value);
 
-            var recetas = await _recipeService.GetMisRecetasAsync(userId);
+            var recetas = await _recipeService.GetMisRecetasAsync(userId, category);
             return Ok(recetas);
         }
+
 
 
 
@@ -101,7 +101,7 @@ namespace RecetasAPINet.Controllers
         }
 
         [HttpGet("favoritas")]
-        public async Task<ActionResult<List<RecipeCardDto>>> GetFavoritas()
+        public async Task<ActionResult<List<RecipeCardDto>>> GetFavoritas([FromQuery] string? category)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
                               ?? User.FindFirst("id");
@@ -111,7 +111,7 @@ namespace RecetasAPINet.Controllers
 
             Guid userId = Guid.Parse(userIdClaim.Value);
 
-            var recetas = await _recipeService.GetFavoritasAsync(userId);
+            var recetas = await _recipeService.GetFavoritasAsync(userId, category);
             return Ok(recetas);
         }
 
