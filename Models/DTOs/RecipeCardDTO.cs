@@ -7,4 +7,6 @@ public class RecipeCardDto
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public RecipeType Type { get; set; }
+
+    public bool IsFavorite{get;set;}
 }

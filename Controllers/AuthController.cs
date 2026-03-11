@@ -63,7 +63,7 @@ namespace RecetasAPINet.Controllers
             };
 
             Response.Cookies.Append("auth_token", "", cookieOptions);
-            return Ok("Logout correcto");
+            return Ok(new{message ="Logout correcto"});
         }
 
         [HttpGet("me")]

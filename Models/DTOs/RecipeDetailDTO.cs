@@ -15,6 +15,7 @@ public class RecipeDetailDto
 
     public List<RecipeIngredientDto> Ingredients { get; set; } = new();
     public List<RecipeStepDto> Steps { get; set; } = new();
+    public bool IsFavorite { get; set; }
 }
 
 public class RecipeIngredientDto

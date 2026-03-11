@@ -16,14 +16,17 @@ namespace RecetasAPINet.Services
 
         private readonly IUserRepository _userRepo;
 
+        private readonly IUserFavoriteRepository _userFavoriteRepo;
+
         public RecipeService(RecetasDbContext context, IRecipeRepository recipeRepo, IRecipeIngredientRepository recipeIngredientRepo,
-        IStepRepository stepRepo, IUserRepository userRepo)
+        IStepRepository stepRepo, IUserRepository userRepo, IUserFavoriteRepository userFavoriteRepo)
         {
             _context = context;
             _recipeRepo = recipeRepo;
             _recipeIngredientRepo = recipeIngredientRepo;
             _stepRepo = stepRepo;
             _userRepo = userRepo;
+            _userFavoriteRepo = userFavoriteRepo;
 
         }
 
@@ -39,7 +42,7 @@ namespace RecetasAPINet.Services
                 PrepTime = request.PrepTime,
                 Servings = request.Servings,
                 Image = request.Image,
-                Enabled = false
+                Enabled = true
             };
 
             await _recipeRepo.AddAsync(recipe);
@@ -73,14 +76,30 @@ namespace RecetasAPINet.Services
 
         public async Task<List<RecipeCardDto>> GetMisRecetasAsync(Guid userId)
         {
-            return await _recipeRepo.GetRecipesByUserIdAsync(userId);
+            var recetas = await _recipeRepo.GetRecipesByUserIdAsync(userId);
+
+            return recetas
+                .Where(r => r.Enabled) 
+                .Select(r => new RecipeCardDto
+                {
+                    Id = r.Id,
+                    Image = r.Image,
+                    Title = r.Title,
+                    Description = r.Description,
+                    Type = r.Type,
+                    IsFavorite = _context.UserFavorites
+                        .Any(f => f.UserId == userId && f.RecipeId == r.Id)
+                })
+                .ToList();
         }
 
-        public async Task<RecipeDetailDto?> GetRecipeDetailAsync(Guid recipeId)
+
+
+        public async Task<RecipeDetailDto?> GetRecipeDetailAsync(Guid recipeId, Guid userId)
         {
             // 1. Buscar la receta
             var recipe = await _recipeRepo.GetByIdAsync(recipeId);
-            
+
 
             if (recipe == null)
                 return null;
@@ -103,9 +122,6 @@ namespace RecetasAPINet.Services
                 UserImage = user?.Image ?? string.Empty,
 
 
-
-
-                // estos se rellenarán en el paso 3 y 4
                 Ingredients = new List<RecipeIngredientDto>(),
                 Steps = new List<RecipeStepDto>()
             };
@@ -133,8 +149,87 @@ namespace RecetasAPINet.Services
                 })
                 .ToList();
 
+            dto.IsFavorite = await _userFavoriteRepo.GetAsync(userId, recipeId) != null;
+
             return dto;
         }
+
+        public async Task<List<RecipeCardDto>> GetAllRecetasAsync(Guid userId)
+        {
+            var recetas = await _recipeRepo.GetAll();
+
+            return recetas
+                .Where(r => r.Enabled)
+                .Select(r => new RecipeCardDto
+                {
+                    Id = r.Id,
+                    Image = r.Image ?? string.Empty,
+                    Title = r.Title ?? string.Empty,
+                    Description = r.Description ?? string.Empty,
+                    Type = r.Type,
+                    IsFavorite = _context.UserFavorites
+                        .Any(f => f.UserId == userId && f.RecipeId == r.Id)
+                })
+                .ToList();
+        }
+
+
+
+        public async Task<bool> ToggleFavoriteAsync(Guid userId, Guid recipeId)
+        {
+            var existing = await _userFavoriteRepo.GetAsync(userId, recipeId);
+
+            if (existing != null)
+            {
+                await _userFavoriteRepo.RemoveAsync(existing);
+                await _userFavoriteRepo.SaveChangesAsync();
+                return false;
+            }
+
+            var newFav = new UserFavorite
+            {
+                UserId = userId,
+                RecipeId = recipeId
+            };
+
+            await _userFavoriteRepo.AddAsync(newFav);
+            await _userFavoriteRepo.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<RecipeCardDto>> GetFavoritasAsync(Guid userId)
+        {
+            // 1. Obtener favoritos del usuario
+            var favoritos = await _userFavoriteRepo.GetByUserIdAsync(userId);
+
+            // Si no tiene favoritos, devolvemos lista vacía
+            if (!favoritos.Any())
+                return new List<RecipeCardDto>();
+
+            // 2. Obtener los IDs de recetas favoritas
+            var recipeIds = favoritos.Select(f => f.RecipeId).ToList();
+
+            // 3. Obtener las recetas correspondientes
+            var recetas = await _recipeRepo.GetByIdsAsync(recipeIds);
+
+            // 4. Filtrar solo las habilitadas
+            recetas = recetas.Where(r => r.Enabled).ToList();
+
+            // 5. Construir DTOs
+            return recetas
+                .Select(r => new RecipeCardDto
+                {
+                    Id = r.Id,
+                    Image = r.Image ?? string.Empty,
+                    Title = r.Title ?? string.Empty,
+                    Description = r.Description ?? string.Empty,
+                    Type = r.Type,
+                    IsFavorite = true 
+                })
+                .ToList();
+        }
+
+
 
     }
 }

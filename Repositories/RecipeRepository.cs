@@ -19,25 +19,35 @@ namespace RecetasAPINet.Repositories
             await _context.Recipes.AddAsync(recipe);
         }
 
-        public async Task<List<RecipeCardDto>> GetRecipesByUserIdAsync(Guid userId)
+        public async Task<List<Recipe>> GetRecipesByUserIdAsync(Guid userId)
         {
             return await _context.Recipes
-            .Where(r => r.UserId == userId)
-            .Select(r => new RecipeCardDto
-            {
-                Id = r.Id,
-                Image = r.Image,
-                Title = r.Title,
-                Description = r.Description,
-                Type = r.Type
-            }).ToListAsync();
+                .Where(r => r.UserId == userId)
+                .ToListAsync();
         }
+
 
         public async Task<Recipe?> GetByIdAsync(Guid id)
         {
             return await _context.Recipes
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
+
+        public async Task<List<Recipe>> GetAll()
+        {
+            return await _context.Recipes.ToListAsync();
+        }
+
+        public async Task<List<Recipe>> GetByIdsAsync(List<Guid> ids)
+        {
+            return await _context.Recipes
+                .Where(r => ids.Contains(r.Id))
+                .ToListAsync();
+        }
+
+
+
+
 
     }
 }
