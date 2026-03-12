@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "DRWTMM0YvTMuf4A8vQ/8uKofA2z2IEd550unz+AhjaU=",
+  "Hash": "qcwDYQITlDDEhEibGUoa+3IJZnDYksy/C1dUBHZsGRE=",
   "Source": "recetasAPINet",
   "BasePath": "_content/recetasAPINet",
   "Mode": "Default",
@@ -34,6 +34,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\ImageRecipes\\08967dc0-97d6-4f5c-a55a-f55978d3fc94.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\2f58ded5-47e2-4f55-897c-c2e462f36370.jpg",
+      "SourceId": "recetasAPINet",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\",
+      "BasePath": "_content/recetasAPINet",
+      "RelativePath": "ImageRecipes/2f58ded5-47e2-4f55-897c-c2e462f36370.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ImageRecipes\\2f58ded5-47e2-4f55-897c-c2e462f36370.jpg"
     },
     {
       "Identity": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\3435321a-5dfd-40d5-9d57-4d31e9650aaa.jpg",
@@ -224,6 +243,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\ImageRecipes\\eca4dcb4-731f-4b09-bc43-4950b569586d.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\f0aee81f-a298-47e3-b252-64fb43ba0b74.jpg",
+      "SourceId": "recetasAPINet",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\",
+      "BasePath": "_content/recetasAPINet",
+      "RelativePath": "ImageRecipes/f0aee81f-a298-47e3-b252-64fb43ba0b74.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ImageRecipes\\f0aee81f-a298-47e3-b252-64fb43ba0b74.jpg"
     }
   ]
 }

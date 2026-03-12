@@ -45,6 +45,17 @@ namespace RecetasAPINet.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Recipe>> searchByTitleOrDescriptionAsync(string filtro)
+        {
+            filtro = filtro.ToLower().Trim();
+
+            return await _context.Recipes
+            .Where(r => r.Enabled &&(
+                (r.Title != null && r.Title.ToLower().Contains(filtro)) ||
+                (r.Description != null && r.Description.ToLower().Contains(filtro))
+            )).ToListAsync();
+        }
+
 
 
 

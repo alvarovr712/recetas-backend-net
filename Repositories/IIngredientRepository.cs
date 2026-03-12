@@ -6,5 +6,7 @@ namespace RecetasAPINet.Repositories
     {
         Task<List<Ingredient>> GetAllAsync();
         Task AddAsync(Ingredient ingredient);
+        Task<List<Ingredient>> SearchIngredientsByNameAsync(string name);
+
     }
 }

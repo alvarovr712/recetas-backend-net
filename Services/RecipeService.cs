@@ -18,8 +18,10 @@ namespace RecetasAPINet.Services
 
         private readonly IUserFavoriteRepository _userFavoriteRepo;
 
+        private readonly IIngredientRepository _ingredientRepo;
+
         public RecipeService(RecetasDbContext context, IRecipeRepository recipeRepo, IRecipeIngredientRepository recipeIngredientRepo,
-        IStepRepository stepRepo, IUserRepository userRepo, IUserFavoriteRepository userFavoriteRepo)
+        IStepRepository stepRepo, IUserRepository userRepo, IUserFavoriteRepository userFavoriteRepo, IIngredientRepository ingredientRepo)
         {
             _context = context;
             _recipeRepo = recipeRepo;
@@ -27,6 +29,7 @@ namespace RecetasAPINet.Services
             _stepRepo = stepRepo;
             _userRepo = userRepo;
             _userFavoriteRepo = userFavoriteRepo;
+            _ingredientRepo = ingredientRepo;
 
         }
 
@@ -90,7 +93,7 @@ namespace RecetasAPINet.Services
                 }
             }
 
-            
+
             return recetas
                 .Select(r => new RecipeCardDto
                 {
@@ -224,44 +227,268 @@ namespace RecetasAPINet.Services
         }
 
         public async Task<List<RecipeCardDto>> GetFavoritasAsync(Guid userId, string? category = null)
-{
-    // 1. Obtener favoritos del usuario
-    var favoritos = await _userFavoriteRepo.GetByUserIdAsync(userId);
-
-    if (!favoritos.Any())
-        return new List<RecipeCardDto>();
-
-    // 2. IDs de recetas favoritas
-    var recipeIds = favoritos.Select(f => f.RecipeId).ToList();
-
-    // 3. Obtener recetas
-    var recetas = await _recipeRepo.GetByIdsAsync(recipeIds);
-
-    // 4. Solo habilitadas
-    recetas = recetas.Where(r => r.Enabled).ToList();
-
-    // 5. Filtrar por categoría si viene
-    if (!string.IsNullOrEmpty(category) && category != "Todo")
-    {
-        if (Enum.TryParse<RecipeType>(category, out var typeEnum))
         {
-            recetas = recetas.Where(r => r.Type == typeEnum).ToList();
+            // 1. Obtener favoritos del usuario
+            var favoritos = await _userFavoriteRepo.GetByUserIdAsync(userId);
+
+            if (!favoritos.Any())
+                return new List<RecipeCardDto>();
+
+            // 2. IDs de recetas favoritas
+            var recipeIds = favoritos.Select(f => f.RecipeId).ToList();
+
+            // 3. Obtener recetas
+            var recetas = await _recipeRepo.GetByIdsAsync(recipeIds);
+
+            // 4. Solo habilitadas
+            recetas = recetas.Where(r => r.Enabled).ToList();
+
+            // 5. Filtrar por categoría si viene
+            if (!string.IsNullOrEmpty(category) && category != "Todo")
+            {
+                if (Enum.TryParse<RecipeType>(category, out var typeEnum))
+                {
+                    recetas = recetas.Where(r => r.Type == typeEnum).ToList();
+                }
+            }
+
+            // 6. Mapear DTOs
+            return recetas
+                .Select(r => new RecipeCardDto
+                {
+                    Id = r.Id,
+                    Image = r.Image ?? string.Empty,
+                    Title = r.Title ?? string.Empty,
+                    Description = r.Description ?? string.Empty,
+                    Type = r.Type,
+                    IsFavorite = true
+                })
+                .ToList();
         }
-    }
 
-    // 6. Mapear DTOs
-    return recetas
-        .Select(r => new RecipeCardDto
+        public async Task<List<RecipeCardDto>> FiltroByTitleDescriptionOrIngredientAsync(Guid userId, string filtro)
         {
-            Id = r.Id,
-            Image = r.Image ?? string.Empty,
-            Title = r.Title ?? string.Empty,
-            Description = r.Description ?? string.Empty,
-            Type = r.Type,
-            IsFavorite = true
-        })
-        .ToList();
-}
+            if (string.IsNullOrWhiteSpace(filtro))
+                return new List<RecipeCardDto>();
+
+            filtro = filtro.ToLower().Trim();
+
+            // ---------------------------------------------------------
+            // 1. Buscar por título o descripción
+            // ---------------------------------------------------------
+            var recetasTexto = await _recipeRepo.searchByTitleOrDescriptionAsync(filtro);
+
+            // ---------------------------------------------------------
+            // 2. Buscar ingredientes por nombre
+            // ---------------------------------------------------------
+            var ingredientes = await _ingredientRepo.SearchIngredientsByNameAsync(filtro);
+
+            List<Recipe> recetasIngredientes = new();
+
+            if (ingredientes.Any())
+            {
+                // Obtener IDs de ingredientes
+                var ingredientIds = ingredientes.Select(i => i.Id).ToList();
+
+                // Buscar en RecipeIngredient por esos ingredientIds
+                var recipeIngredients = await _recipeIngredientRepo.GetByIngredientIdsAsync(ingredientIds);
+
+                if (recipeIngredients.Any())
+                {
+                    // Obtener los RecipeId únicos
+                    var recipeIds = recipeIngredients
+                        .Select(ri => ri.RecipeId)
+                        .Distinct()
+                        .ToList();
+
+                    // Recuperar las recetas asociadas
+                    recetasIngredientes = await _recipeRepo.GetByIdsAsync(recipeIds);
+                }
+            }
+
+            // ---------------------------------------------------------
+            // 3. Unir resultados sin duplicados
+            // ---------------------------------------------------------
+            var recetasFinal = recetasTexto
+                .Union(recetasIngredientes)
+                .Where(r => r.Enabled) // solo habilitadas
+                .Distinct()
+                .ToList();
+
+            // ---------------------------------------------------------
+            // 4. Mapear a DTO
+            // ---------------------------------------------------------
+            var favoritos = _context.UserFavorites
+                .Where(f => f.UserId == userId)
+                .Select(f => f.RecipeId)
+                .ToHashSet();
+
+            return recetasFinal
+                .Select(r => new RecipeCardDto
+                {
+                    Id = r.Id,
+                    Image = r.Image ?? string.Empty,
+                    Title = r.Title ?? string.Empty,
+                    Description = r.Description ?? string.Empty,
+                    Type = r.Type,
+                    IsFavorite = favoritos.Contains(r.Id)
+                })
+                .ToList();
+        }
+
+        public async Task<List<RecipeCardDto>> FiltroMisRecetasAsync(Guid userId, string filtro)
+        {
+            if (string.IsNullOrWhiteSpace(filtro))
+                return new List<RecipeCardDto>();
+
+            filtro = filtro.ToLower().Trim();
+
+            // ---------------------------------------------------------
+            // 1. Buscar mis recetas por título o descripción
+            // ---------------------------------------------------------
+            var recetasTexto = await _recipeRepo.searchByTitleOrDescriptionAsync(filtro);
+
+            // Filtrar solo las mías
+            recetasTexto = recetasTexto
+                .Where(r => r.UserId == userId)
+                .ToList();
+
+            // ---------------------------------------------------------
+            // 2. Buscar ingredientes por nombre
+            // ---------------------------------------------------------
+            var ingredientes = await _ingredientRepo.SearchIngredientsByNameAsync(filtro);
+
+            List<Recipe> recetasIngredientes = new();
+
+            if (ingredientes.Any())
+            {
+                var ingredientIds = ingredientes.Select(i => i.Id).ToList();
+
+                var recipeIngredients = await _recipeIngredientRepo.GetByIngredientIdsAsync(ingredientIds);
+
+                if (recipeIngredients.Any())
+                {
+                    var recipeIds = recipeIngredients
+                        .Select(ri => ri.RecipeId)
+                        .Distinct()
+                        .ToList();
+
+                    // Recuperar recetas asociadas
+                    recetasIngredientes = await _recipeRepo.GetByIdsAsync(recipeIds);
+
+                    // Filtrar solo las mías
+                    recetasIngredientes = recetasIngredientes
+                        .Where(r => r.UserId == userId)
+                        .ToList();
+                }
+            }
+
+            // ---------------------------------------------------------
+            // 3. Unir resultados sin duplicados
+            // ---------------------------------------------------------
+            var recetasFinal = recetasTexto
+                .Union(recetasIngredientes)
+                .Where(r => r.Enabled)
+                .Distinct()
+                .ToList();
+
+            // ---------------------------------------------------------
+            // 4. Mapear a DTO
+            // ---------------------------------------------------------
+            return recetasFinal
+                .Select(r => new RecipeCardDto
+                {
+                    Id = r.Id,
+                    Image = r.Image ?? string.Empty,
+                    Title = r.Title ?? string.Empty,
+                    Description = r.Description ?? string.Empty,
+                    Type = r.Type,
+                    IsFavorite = true
+                })
+                .ToList();
+        }
+
+        public async Task<List<RecipeCardDto>> FiltroFavoritasAsync(Guid userId, string filtro)
+        {
+            if (string.IsNullOrWhiteSpace(filtro))
+                return new List<RecipeCardDto>();
+
+            filtro = filtro.ToLower().Trim();
+
+            // ---------------------------------------------------------
+            // 1. Obtener IDs de recetas favoritas del usuario
+            // ---------------------------------------------------------
+            var favoriteIds = await _userFavoriteRepo.GetByUserIdAsync(userId);
+            var favRecipeIds = favoriteIds.Select(f => f.RecipeId).ToList();
+
+            if (!favRecipeIds.Any())
+                return new List<RecipeCardDto>();
+
+            // ---------------------------------------------------------
+            // 2. Buscar por título o descripción dentro de favoritas
+            // ---------------------------------------------------------
+            var recetasTexto = await _recipeRepo.searchByTitleOrDescriptionAsync(filtro);
+            recetasTexto = recetasTexto
+                .Where(r => favRecipeIds.Contains(r.Id))
+                .ToList();
+
+            // ---------------------------------------------------------
+            // 3. Buscar ingredientes por nombre
+            // ---------------------------------------------------------
+            var ingredientes = await _ingredientRepo.SearchIngredientsByNameAsync(filtro);
+
+            List<Recipe> recetasIngredientes = new();
+
+            if (ingredientes.Any())
+            {
+                var ingredientIds = ingredientes.Select(i => i.Id).ToList();
+
+                var recipeIngredients = await _recipeIngredientRepo.GetByIngredientIdsAsync(ingredientIds);
+
+                if (recipeIngredients.Any())
+                {
+                    var recipeIds = recipeIngredients
+                        .Select(ri => ri.RecipeId)
+                        .Distinct()
+                        .ToList();
+
+                    // Recuperar recetas asociadas
+                    recetasIngredientes = await _recipeRepo.GetByIdsAsync(recipeIds);
+
+                    // Filtrar solo favoritas
+                    recetasIngredientes = recetasIngredientes
+                        .Where(r => favRecipeIds.Contains(r.Id))
+                        .ToList();
+                }
+            }
+
+            // ---------------------------------------------------------
+            // 4. Unir resultados sin duplicados
+            // ---------------------------------------------------------
+            var recetasFinal = recetasTexto
+                .Union(recetasIngredientes)
+                .Where(r => r.Enabled)
+                .Distinct()
+                .ToList();
+
+            // ---------------------------------------------------------
+            // 5. Mapear a DTO
+            // ---------------------------------------------------------
+            return recetasFinal
+                .Select(r => new RecipeCardDto
+                {
+                    Id = r.Id,
+                    Image = r.Image ?? string.Empty,
+                    Title = r.Title ?? string.Empty,
+                    Description = r.Description ?? string.Empty,
+                    Type = r.Type,
+                    IsFavorite = true // todas son favoritas
+                })
+                .ToList();
+        }
+
+
+
 
 
 

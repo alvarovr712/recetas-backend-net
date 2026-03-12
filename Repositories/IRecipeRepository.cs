@@ -9,6 +9,9 @@ namespace RecetasAPINet.Repositories
         Task<List<Recipe>> GetAll();
 
         Task<List<Recipe>> GetByIdsAsync(List<Guid> ids);
+        
+        Task<List<Recipe>> searchByTitleOrDescriptionAsync(string filtro);
+
 
     }
 }

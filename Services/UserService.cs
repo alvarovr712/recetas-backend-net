@@ -43,27 +43,5 @@ namespace RecetasAPINet.Services
 
             return user;
         }
-
-       /* public async Task<User> Login(LoginRequest loginRequest)
-        {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == loginRequest.Identifier || u.Username == loginRequest.Identifier);
-
-            if(user == null)
-            {
-                throw new Exception("Email o Username incorrecto");
-
-            }
-
-            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, loginRequest.Password);
-
-            if(result == PasswordVerificationResult.Failed)
-            {
-                throw new Exception("Contraseña incorrecta");
-            }
-
-            return user;
-
-        }*/
     }
 }

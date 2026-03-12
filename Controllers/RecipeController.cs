@@ -115,6 +115,57 @@ namespace RecetasAPINet.Controllers
             return Ok(recetas);
         }
 
+        [HttpGet("buscar")]
+        public async Task<ActionResult<List<RecipeCardDto>>> Buscar([FromQuery] string filtro)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
+                              ?? User.FindFirst("id");
+
+            if (userIdClaim == null)
+                return Unauthorized("No se pudo obtener el ID del usuario del token");
+
+            Guid userId = Guid.Parse(userIdClaim.Value);
+
+            var recetas = await _recipeService.FiltroByTitleDescriptionOrIngredientAsync(userId, filtro);
+
+            return Ok(recetas);
+        }
+
+        [HttpGet("mis-recetas/buscar")]
+        public async Task<ActionResult<List<RecipeCardDto>>> BuscarMisRecetas([FromQuery] string filtro)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
+                              ?? User.FindFirst("id");
+
+            if (userIdClaim == null)
+                return Unauthorized("No se pudo obtener el ID del usuario del token");
+
+            Guid userId = Guid.Parse(userIdClaim.Value);
+
+            var recetas = await _recipeService.FiltroMisRecetasAsync(userId, filtro);
+
+            return Ok(recetas);
+        }
+
+        [HttpGet("favoritas/buscar")]
+        public async Task<ActionResult<List<RecipeCardDto>>> BuscarFavoritas([FromQuery] string filtro)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
+                              ?? User.FindFirst("id");
+
+            if (userIdClaim == null)
+                return Unauthorized("No se pudo obtener el ID del usuario del token");
+
+            Guid userId = Guid.Parse(userIdClaim.Value);
+
+            var recetas = await _recipeService.FiltroFavoritasAsync(userId, filtro);
+
+            return Ok(recetas);
+        }
+
+
+
+
 
     }
 }

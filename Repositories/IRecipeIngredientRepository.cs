@@ -7,6 +7,8 @@ namespace RecetasAPINet.Repositories
         Task AddRangeAsync(List<RecipeIngredient> ingredients);
         Task<List<RecipeIngredient>> GetByRecipeIdAsync(Guid recipeId);
 
+        Task<List<RecipeIngredient>> GetByIngredientIdsAsync(List<Guid> ingredientIds);
+
 
     }
 }

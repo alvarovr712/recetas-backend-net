@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\ImageRecipes\\08967dc0-97d6-4f5c-a55a-f55978d3fc94.jpg"
     },
     {
+      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\2f58ded5-47e2-4f55-897c-c2e462f36370.jpg",
+      "PackagePath": "staticwebassets\\ImageRecipes\\2f58ded5-47e2-4f55-897c-c2e462f36370.jpg"
+    },
+    {
       "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\3435321a-5dfd-40d5-9d57-4d31e9650aaa.jpg",
       "PackagePath": "staticwebassets\\ImageRecipes\\3435321a-5dfd-40d5-9d57-4d31e9650aaa.jpg"
     },
@@ -43,6 +47,10 @@
     {
       "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\eca4dcb4-731f-4b09-bc43-4950b569586d.jpg",
       "PackagePath": "staticwebassets\\ImageRecipes\\eca4dcb4-731f-4b09-bc43-4950b569586d.jpg"
+    },
+    {
+      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\f0aee81f-a298-47e3-b252-64fb43ba0b74.jpg",
+      "PackagePath": "staticwebassets\\ImageRecipes\\f0aee81f-a298-47e3-b252-64fb43ba0b74.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.recetasAPINet.props",

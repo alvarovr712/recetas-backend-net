@@ -6,7 +6,7 @@ namespace RecetasAPINet.Repositories
     public class IngredientRepository : IIngredientRepository
     {
         private readonly RecetasDbContext _context;
-        
+
         public IngredientRepository(RecetasDbContext context)
         {
             _context = context;
@@ -22,5 +22,15 @@ namespace RecetasAPINet.Repositories
             _context.Ingredients.Add(ingredient);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Ingredient>> SearchIngredientsByNameAsync(string name)
+        {
+            name = name.ToLower().Trim();
+
+            return await _context.Ingredients
+                .Where(i => i.Name.ToLower().Contains(name))
+                .ToListAsync();
+        }
+
     }
 }

@@ -27,5 +27,13 @@ namespace RecetasAPINet.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<RecipeIngredient>> GetByIngredientIdsAsync(List<Guid> ingredientIds)
+        {
+            return await _context.RecipeIngredients
+                .Where(ri => ingredientIds.Contains(ri.IngredientId))
+                .ToListAsync();
+        }
+
+
     }
 }
