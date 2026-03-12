@@ -30,5 +30,12 @@ namespace RecetasAPINet.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<int> CountRecipeCreationsAsync(Guid userId)
+        {
+            return await _context.Logs
+                .Where(l => l.UserId == userId && l.Action == "CrearReceta")
+                .CountAsync();
+        }
     }
 }

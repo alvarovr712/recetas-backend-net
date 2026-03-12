@@ -5,6 +5,7 @@ using RecetasAPINet.Data;
 using RecetasAPINet.Models;
 using RecetasAPINet.DTOs;
 using RecetasAPINet.Repositories;
+using System.Security.Claims;
 
 namespace RecetasAPINet.Services
 {
@@ -15,11 +16,15 @@ namespace RecetasAPINet.Services
 
         private readonly ILogRepository _logRepository;
 
-        public UserService(RecetasDbContext context, IPasswordHasher<User> passwordHasher, ILogRepository logRepository)
+        private readonly IUserRepository _userRepository;
+
+        public UserService(RecetasDbContext context, IPasswordHasher<User> passwordHasher, ILogRepository logRepository,
+        IUserRepository userRepository)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _logRepository = logRepository;
+            _userRepository = userRepository;
         }
 
 
@@ -58,10 +63,10 @@ namespace RecetasAPINet.Services
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-             await _logRepository.AddAsync(new Log
+            await _logRepository.AddAsync(new Log
             {
                 Id = Guid.NewGuid(),
-                UserId = user.Id, 
+                UserId = user.Id,
                 Action = "CrearUsuario",
                 Description = $"Se creo un nuevo usuario con username '{user.Username}' y email '{user.Email}'",
                 CreatedAt = DateTime.UtcNow
@@ -71,5 +76,91 @@ namespace RecetasAPINet.Services
 
             return user;
         }
+
+        public async Task<UserProfileDTO> GetUserProfileAsync(ClaimsPrincipal userClaims)
+        {
+            // 1. Obtener userId del token
+            var userIdClaim = userClaims.FindFirst(ClaimTypes.NameIdentifier)
+                               ?? userClaims.FindFirst("sub")
+                               ?? userClaims.FindFirst("id");
+
+            if (userIdClaim == null)
+                throw new Exception("No se pudo obtener el ID del usuario del token");
+
+            Guid userId = Guid.Parse(userIdClaim.Value);
+
+            // 2. Buscar usuario
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                throw new Exception("Usuario no encontrado");
+
+            // 3. Contar recetas creadas desde logs
+            var recipesCreated = await _logRepository.CountRecipeCreationsAsync(userId);
+
+            // 4. Devolver DTO
+            return new UserProfileDTO
+            {
+                Name = user.Name,
+                Surnames = user.Surnames,
+                Email = user.Email,
+                Username = user.Username,
+                CreatedAt = user.CreatedAt,
+                Image = user.Image,
+                Role = user.Role.ToString(),
+                RecipesCreated = recipesCreated
+            };
+        }
+
+        public async Task<User> UpdateUserAsync(Guid userId, UpdateUserDto dto)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new Exception("Usuario no encontrado");
+
+            // Actualizar solo los campos enviados
+            if (!string.IsNullOrWhiteSpace(dto.Name))
+                user.Name = dto.Name;
+
+            if (!string.IsNullOrWhiteSpace(dto.Surnames))
+                user.Surnames = dto.Surnames;
+
+            if (!string.IsNullOrWhiteSpace(dto.Email))
+                user.Email = dto.Email;
+
+            if (!string.IsNullOrWhiteSpace(dto.Username))
+                user.Username = dto.Username;
+
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+                user.Password = _passwordHasher.HashPassword(user, dto.Password);
+
+            // Imagen opcional
+            if (dto.Image != null)
+            {
+                // 1. Borrar imagen anterior si existe
+                if (!string.IsNullOrEmpty(user.Image))
+                {
+                    var oldImagePath = Path.Combine("wwwroot", user.Image.TrimStart('/'));
+                    if (File.Exists(oldImagePath))
+                        File.Delete(oldImagePath);
+                }
+
+                // 2. Guardar la nueva imagen
+                var folderPath = Path.Combine("wwwroot", "ImageUsers");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.Image.FileName)}";
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await dto.Image.CopyToAsync(stream);
+
+                user.Image = $"/ImageUsers/{fileName}";
+            }
+
+            // Guardar cambios usando el repositorio
+            return await _userRepository.UpdateAsync(user);
+        }
+
     }
 }

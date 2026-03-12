@@ -6,6 +6,8 @@ using RecetasAPINet.DTOs;
 using System.ComponentModel.DataAnnotations;
 using RecetasAPINet.Enums;
 using RecetasAPINet.Security;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 namespace RecetasAPINet.Controllers
@@ -46,32 +48,31 @@ namespace RecetasAPINet.Controllers
             }
         }
 
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetProfile()
+        {
+            var profile = await iUserService.GetUserProfileAsync(User);
+            return Ok(profile);
+        }
 
-        /*  [HttpPost("login")]
-          public async Task<IActionResult> Login ([FromBody] LoginRequest loginRequest)
-          {
-              try
-              {
-                  var user = await iUserService.Login(loginRequest);
+        
+        [HttpPut("update")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserDto dto)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("id");
+            if (userIdClaim == null)
+                return Unauthorized("No se pudo obtener el ID del usuario del token");
 
-                  var token = _jwtService.GenerateToken(user);
+            Guid userId = Guid.Parse(userIdClaim.Value);
 
-                  var cookieOptions = new CookieOptions
-                  {
-                      HttpOnly = true,
-                      Secure = true,
-                      SameSite = SameSiteMode.None,
-                      Expires = DateTime.UtcNow.AddMinutes(60)
-                  };
+            var updatedUser = await iUserService.UpdateUserAsync(userId, dto);
+            return Ok(updatedUser);
+        }
 
-                  Response.Cookies.Append("auth_token" , token, cookieOptions);
-                  return Ok ("Login correcto");
-              }
-              catch(Exception ex)
-              {
-                  return BadRequest(ex.Message);
-              }
-          }*/
+
+
 
     }
 }

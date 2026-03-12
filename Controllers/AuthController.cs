@@ -67,7 +67,7 @@ namespace RecetasAPINet.Controllers
         }
 
         [HttpGet("me")]
-        public IActionResult TokenInfo()
+        public async Task<IActionResult> TokenInfo()
         {
             var token = Request.Cookies["auth_token"];
 
@@ -76,7 +76,7 @@ namespace RecetasAPINet.Controllers
             try
             {
 
-                var info = _authService.TokenInfo(token);
+                var info = await _authService.TokenInfo(token);
                 return Ok(info);
 
             }

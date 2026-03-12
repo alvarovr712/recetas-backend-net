@@ -7,6 +7,6 @@ namespace RecetasAPINet.Services
     {
         Task<User> Login(LoginRequest loginRequest);
         Task Logout();
-        TokenInfoDTO TokenInfo(string token);
+        Task<TokenInfoDTO> TokenInfo(string token);
     }
 }

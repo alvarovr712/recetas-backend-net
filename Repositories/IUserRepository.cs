@@ -5,5 +5,7 @@ namespace RecetasAPINet.Repositories
     public interface IUserRepository
     {
         Task<User?> GetByIdAsync(Guid userId);
+        Task<User> UpdateAsync(User user);
+        
     }
 }

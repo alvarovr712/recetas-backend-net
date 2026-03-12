@@ -69,7 +69,7 @@ namespace RecetasAPINet.Security
 
             return new TokenInfoDTO
             {
-                UserId = int.TryParse(userIdString, out var uid) ? uid : 0,
+                UserId = userIdString ?? string.Empty,
                 Username = username ?? string.Empty,
                 Role = Enum.TryParse<Role>(roleString, true, out var role) ? role : Role.User,
                 Image = imageString,

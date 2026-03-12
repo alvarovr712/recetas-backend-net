@@ -47,9 +47,23 @@ namespace RecetasAPINet.Services
             await Task.CompletedTask;
         }
 
-        public TokenInfoDTO TokenInfo(string token)
+        public async Task<TokenInfoDTO> TokenInfo(string token)
         {
-            return _jwtService.ValidateToken(token);
+            var info = _jwtService.ValidateToken(token);
+            if (string.IsNullOrEmpty(info.UserId)) return info;
+
+            // Fetch fresh data from DB to ensure sync (e.g. image change)
+            if (Guid.TryParse(info.UserId, out var guid))
+            {
+                var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == guid);
+                if (user != null)
+                {
+                    info.Image = user.Image ?? string.Empty;
+                    info.Username = user.Username;
+                }
+            }
+
+            return info;
         }
     }
 }
