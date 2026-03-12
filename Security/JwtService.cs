@@ -24,7 +24,8 @@ namespace RecetasAPINet.Security
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim("username", user.Username),
-                new Claim("role", user.Role.ToString())
+                new Claim("role", user.Role.ToString()),
+                new Claim("image", user.Image ?? string.Empty)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Key));
@@ -64,11 +65,14 @@ namespace RecetasAPINet.Security
             var roleString = principal.FindFirst("role")?.Value 
                           ?? principal.FindFirst(ClaimTypes.Role)?.Value;
 
+            var imageString = principal.FindFirst("image")?.Value ?? string.Empty;
+
             return new TokenInfoDTO
             {
                 UserId = int.TryParse(userIdString, out var uid) ? uid : 0,
                 Username = username ?? string.Empty,
                 Role = Enum.TryParse<Role>(roleString, true, out var role) ? role : Role.User,
+                Image = imageString,
                 Expires = validatedToken.ValidTo
             };
         }

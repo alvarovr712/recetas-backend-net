@@ -4,6 +4,7 @@ using RecetasAPINet.Models;
 using RecetasAPINet.Repositories;
 
 using RecetasAPINet.Enums;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace RecetasAPINet.Services
 {
@@ -20,8 +21,11 @@ namespace RecetasAPINet.Services
 
         private readonly IIngredientRepository _ingredientRepo;
 
+        private readonly ILogRepository _logRepository;
+
         public RecipeService(RecetasDbContext context, IRecipeRepository recipeRepo, IRecipeIngredientRepository recipeIngredientRepo,
-        IStepRepository stepRepo, IUserRepository userRepo, IUserFavoriteRepository userFavoriteRepo, IIngredientRepository ingredientRepo)
+        IStepRepository stepRepo, IUserRepository userRepo, IUserFavoriteRepository userFavoriteRepo, IIngredientRepository ingredientRepo,
+        ILogRepository logRepository)
         {
             _context = context;
             _recipeRepo = recipeRepo;
@@ -30,11 +34,27 @@ namespace RecetasAPINet.Services
             _userRepo = userRepo;
             _userFavoriteRepo = userFavoriteRepo;
             _ingredientRepo = ingredientRepo;
+            _logRepository = logRepository;
 
         }
 
         public async Task<Recipe> CrearRecetaAsync(CreateRecipeRequest request, Guid userId)
         {
+
+            var user = await _userRepo.GetByIdAsync(userId);
+            if(user == null)
+                throw new Exception("Usuario no encontrado");
+
+            await _logRepository.AddAsync(new Log
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Action = "CrearReceta",
+                Description = $"El usuario {user.Username} creó la receta: {request.Title}",
+                CreatedAt = DateTime.UtcNow
+            });
+
+            await _logRepository.SaveChangesAsync();
             var recipe = new Recipe
             {
                 Id = Guid.NewGuid(),
@@ -45,6 +65,7 @@ namespace RecetasAPINet.Services
                 PrepTime = request.PrepTime,
                 Servings = request.Servings,
                 Image = request.Image,
+                CreatedAt = DateTime.UtcNow,
                 Enabled = true
             };
 

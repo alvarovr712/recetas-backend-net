@@ -1,0 +1,13 @@
+﻿  Determinando los proyectos que se van a restaurar...
+  Todos los proyectos est├ín actualizados para la restauraci├│n.
+C:\Users\alvar\Documentos\Aplicaci├│n Recetas\recetasAPINet\Services\UserService.cs(57,30): error CS1503: Argumento 2: no se puede convertir de 'SixLabors.Fonts.TextOptions' a 'SixLabors.ImageSharp.Drawing.Processing.RichTextOptions' [C:\Users\alvar\Documentos\Aplicaci├│n Recetas\recetasAPINet\recetasAPINet.csproj]
+C:\Users\alvar\Documentos\Aplicaci├│n Recetas\recetasAPINet\Repositories\UserFavoriteRepository.cs(29,27): warning CS1998: El m├®todo asincr├│nico carece de operadores "await" y se ejecutar├í de forma sincr├│nica. Puede usar el operador 'await' para esperar llamadas API que no sean de bloqueo o 'await Task.Run(...)' para hacer tareas enlazadas a la CPU en un subproceso en segundo plano. [C:\Users\alvar\Documentos\Aplicaci├│n Recetas\recetasAPINet\recetasAPINet.csproj]
+
+ERROR al compilar.
+
+C:\Users\alvar\Documentos\Aplicaci├│n Recetas\recetasAPINet\Repositories\UserFavoriteRepository.cs(29,27): warning CS1998: El m├®todo asincr├│nico carece de operadores "await" y se ejecutar├í de forma sincr├│nica. Puede usar el operador 'await' para esperar llamadas API que no sean de bloqueo o 'await Task.Run(...)' para hacer tareas enlazadas a la CPU en un subproceso en segundo plano. [C:\Users\alvar\Documentos\Aplicaci├│n Recetas\recetasAPINet\recetasAPINet.csproj]
+C:\Users\alvar\Documentos\Aplicaci├│n Recetas\recetasAPINet\Services\UserService.cs(57,30): error CS1503: Argumento 2: no se puede convertir de 'SixLabors.Fonts.TextOptions' a 'SixLabors.ImageSharp.Drawing.Processing.RichTextOptions' [C:\Users\alvar\Documentos\Aplicaci├│n Recetas\recetasAPINet\recetasAPINet.csproj]
+    1 Advertencia(s)
+    1 Errores
+
+Tiempo transcurrido 00:00:00.74

@@ -11,57 +11,67 @@ using RecetasAPINet.Security;
 namespace RecetasAPINet.Controllers
 {
     [ApiController]
-    [Route ("user")]
+    [Route("user")]
     public class UserController : ControllerBase
     {
         private readonly IUserService iUserService;
         private readonly IJwtService _jwtService;
 
-        public UserController (IUserService iuserService, IJwtService jwtService)
+        public UserController(IUserService iuserService, IJwtService jwtService)
         {
             iUserService = iuserService;
             _jwtService = jwtService;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> createUser ([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromForm] RegisterDto dto)
         {
             try
             {
-                var created = await iUserService.CreateUserAsync(user);
+                var user = new User
+                {
+                    Name = dto.Name,
+                    Surnames = dto.Surnames,
+                    Email = dto.Email,
+                    Username = dto.Username,
+                    Password = dto.Password
+                };
+
+                var created = await iUserService.CreateUserAsync(user, dto.Image);
                 return Ok(created);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return BadRequest ( new {error = ex.Message});
+                return BadRequest(new { error = ex.Message });
             }
         }
 
-      /*  [HttpPost("login")]
-        public async Task<IActionResult> Login ([FromBody] LoginRequest loginRequest)
-        {
-            try
-            {
-                var user = await iUserService.Login(loginRequest);
 
-                var token = _jwtService.GenerateToken(user);
+        /*  [HttpPost("login")]
+          public async Task<IActionResult> Login ([FromBody] LoginRequest loginRequest)
+          {
+              try
+              {
+                  var user = await iUserService.Login(loginRequest);
 
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.None,
-                    Expires = DateTime.UtcNow.AddMinutes(60)
-                };
+                  var token = _jwtService.GenerateToken(user);
 
-                Response.Cookies.Append("auth_token" , token, cookieOptions);
-                return Ok ("Login correcto");
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }*/
+                  var cookieOptions = new CookieOptions
+                  {
+                      HttpOnly = true,
+                      Secure = true,
+                      SameSite = SameSiteMode.None,
+                      Expires = DateTime.UtcNow.AddMinutes(60)
+                  };
+
+                  Response.Cookies.Append("auth_token" , token, cookieOptions);
+                  return Ok ("Login correcto");
+              }
+              catch(Exception ex)
+              {
+                  return BadRequest(ex.Message);
+              }
+          }*/
 
     }
 }

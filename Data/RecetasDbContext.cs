@@ -19,6 +19,8 @@ namespace RecetasAPINet.Data
         public DbSet<Session> Sessions { get; set; }
         public DbSet<UserFavorite> UserFavorites { get; set; }
 
+        public DbSet<Log> Logs{get; set;}
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum<Role>("role_enum", nameTranslator: new Npgsql.NameTranslation.NpgsqlNullNameTranslator());

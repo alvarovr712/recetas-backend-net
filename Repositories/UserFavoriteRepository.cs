@@ -26,9 +26,10 @@ namespace RecetasAPINet.Repositories
             await _context.UserFavorites.AddAsync(favorite);
         }
 
-        public async Task RemoveAsync(UserFavorite favorite)
+        public  Task RemoveAsync(UserFavorite favorite)
         {
             _context.UserFavorites.Remove(favorite);
+            return  Task.CompletedTask;
         }
 
         public async Task SaveChangesAsync()
