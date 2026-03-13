@@ -1,68 +1,12 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\08967dc0-97d6-4f5c-a55a-f55978d3fc94.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\08967dc0-97d6-4f5c-a55a-f55978d3fc94.jpg"
+      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\bb6c9b6c-f555-4bfe-8197-485b412e1962.jpg",
+      "PackagePath": "staticwebassets\\ImageRecipes\\bb6c9b6c-f555-4bfe-8197-485b412e1962.jpg"
     },
     {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\16345c8c-7966-48d6-9a72-eef9bd540fec.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\16345c8c-7966-48d6-9a72-eef9bd540fec.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\2f58ded5-47e2-4f55-897c-c2e462f36370.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\2f58ded5-47e2-4f55-897c-c2e462f36370.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\3435321a-5dfd-40d5-9d57-4d31e9650aaa.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\3435321a-5dfd-40d5-9d57-4d31e9650aaa.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\3b6ccf0b-e886-4f72-851b-be0d4c63b5a7.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\3b6ccf0b-e886-4f72-851b-be0d4c63b5a7.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\436aa77f-dafc-4a69-b175-242401b1a2c6.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\436aa77f-dafc-4a69-b175-242401b1a2c6.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\4c5a7608-a1f4-4622-a3fb-26307bffd86d.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\4c5a7608-a1f4-4622-a3fb-26307bffd86d.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\4d48e316-9ac5-4aa2-87a9-4476f3e0ed7d.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\4d48e316-9ac5-4aa2-87a9-4476f3e0ed7d.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\67302b3f-52f5-4d5f-afcd-3789f3b50449.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\67302b3f-52f5-4d5f-afcd-3789f3b50449.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\77366b95-80a9-4af5-a944-6d4282667d1a.jpeg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\77366b95-80a9-4af5-a944-6d4282667d1a.jpeg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\82dd00ae-51fa-4f91-ba15-564f900de7a4.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\82dd00ae-51fa-4f91-ba15-564f900de7a4.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\909ed3f2-5b33-48f3-b537-a25e974af468.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\909ed3f2-5b33-48f3-b537-a25e974af468.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\ad976498-062b-4cdc-b4e5-f106b55b2cec.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\ad976498-062b-4cdc-b4e5-f106b55b2cec.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\b73502e7-6d33-4108-ad8c-c4ca6dd38b00.jpeg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\b73502e7-6d33-4108-ad8c-c4ca6dd38b00.jpeg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\eca4dcb4-731f-4b09-bc43-4950b569586d.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\eca4dcb4-731f-4b09-bc43-4950b569586d.jpg"
-    },
-    {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\f0aee81f-a298-47e3-b252-64fb43ba0b74.jpg",
-      "PackagePath": "staticwebassets\\ImageRecipes\\f0aee81f-a298-47e3-b252-64fb43ba0b74.jpg"
+      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageRecipes\\c8a42066-30e3-4bff-ad03-9bc6a8708f1a.jpeg",
+      "PackagePath": "staticwebassets\\ImageRecipes\\c8a42066-30e3-4bff-ad03-9bc6a8708f1a.jpeg"
     },
     {
       "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageUsers\\51ee1072-0df6-4240-ad2c-16eacca35dd1.png",
@@ -73,12 +17,12 @@
       "PackagePath": "staticwebassets\\ImageUsers\\9b7758b1-4bc8-48c0-9ddd-5dd214bc1f0d.png"
     },
     {
-      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageUsers\\c3e617d8-2be2-45eb-a560-75e23aa715d4.png",
-      "PackagePath": "staticwebassets\\ImageUsers\\c3e617d8-2be2-45eb-a560-75e23aa715d4.png"
-    },
-    {
       "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageUsers\\d3353833-7722-49f2-9e97-062deb3f8735.png",
       "PackagePath": "staticwebassets\\ImageUsers\\d3353833-7722-49f2-9e97-062deb3f8735.png"
+    },
+    {
+      "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageUsers\\d9570615-1581-4605-972a-2354f15cbb48.png",
+      "PackagePath": "staticwebassets\\ImageUsers\\d9570615-1581-4605-972a-2354f15cbb48.png"
     },
     {
       "Id": "C:\\Users\\alvar\\Documentos\\Aplicación Recetas\\recetasAPINet\\wwwroot\\ImageUsers\\dda8a81a-4a8f-411a-b2f7-4ce9e665db4a.png",

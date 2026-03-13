@@ -3,8 +3,6 @@ using RecetasAPINet.Data;
 using RecetasAPINet.Models;
 namespace RecetasAPINet.Repositories
 {
-
-
     public class RecipeRepository : IRecipeRepository
     {
         private readonly RecetasDbContext _context;
@@ -50,15 +48,26 @@ namespace RecetasAPINet.Repositories
             filtro = filtro.ToLower().Trim();
 
             return await _context.Recipes
-            .Where(r => r.Enabled &&(
+            .Where(r => r.Enabled && (
                 (r.Title != null && r.Title.ToLower().Contains(filtro)) ||
                 (r.Description != null && r.Description.ToLower().Contains(filtro))
             )).ToListAsync();
         }
 
+        public async Task<Recipe> UpdateAsync(Recipe recipe)
+        {
+            _context.Recipes.Update(recipe);
+            _context.Entry(recipe).Property(r => r.CreatedAt).IsModified = false;
 
+            await _context.SaveChangesAsync();
 
+            return recipe;
+        }
 
-
+        public async Task DeleteAsync(Recipe recipe)
+        {
+            _context.Recipes.Remove(recipe);
+            await _context.SaveChangesAsync();
+        }
     }
 }

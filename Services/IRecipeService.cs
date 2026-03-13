@@ -1,3 +1,4 @@
+using RecetasAPINet.DTOs;
 using RecetasAPINet.Models;
 
 namespace RecetasAPINet.Services
@@ -17,10 +18,8 @@ namespace RecetasAPINet.Services
          Task<List<RecipeCardDto>> FiltroMisRecetasAsync(Guid userId, string filtro);
 
          Task<List<RecipeCardDto>> FiltroFavoritasAsync(Guid userId, string filtro);
+
+         Task<Recipe> EditarRecetaAsync(UpdateRecipeDTO request, Guid userId);
+         Task<bool> EliminarRecetaAsync(Guid recipeId, Guid userId);
     }
-
-
-       
-
-    
 }

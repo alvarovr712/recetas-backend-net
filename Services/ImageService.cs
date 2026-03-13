@@ -13,18 +13,18 @@ namespace RecetasAPINet.Services
 
         public async Task<string> SaveImageAsync(IFormFile file)
         {
-            if(file == null || file.Length == 0)
+            if (file == null || file.Length == 0)
                 throw new Exception("No file uploaded");
 
             var folderPath = Path.Combine(_env.WebRootPath, "ImageRecipes");
 
-            if(!Directory.Exists(folderPath))
+            if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
 
             var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
             var filePath = Path.Combine(folderPath, fileName);
 
-            using(var stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
@@ -34,5 +34,26 @@ namespace RecetasAPINet.Services
 
             return url;
         }
+
+        public void DeleteImage(string imageUrl)
+        {
+            if (string.IsNullOrWhiteSpace(imageUrl))
+                return;
+
+            try
+            {
+                var uri = new Uri(imageUrl);
+                var fileName = Path.GetFileName(uri.LocalPath);
+                var filePath = Path.Combine(_env.WebRootPath, "ImageRecipes", fileName);
+
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+            }
+            catch
+            {
+                // Ignorar errores en el borrado para no interrumpir el flujo principal
+            }
+        }
+
     }
 }

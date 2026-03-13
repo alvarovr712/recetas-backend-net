@@ -9,6 +9,9 @@ namespace RecetasAPINet.Repositories
 
         Task<List<RecipeIngredient>> GetByIngredientIdsAsync(List<Guid> ingredientIds);
 
+        Task DeleteByRecipeIdAsync(Guid recipeId);
+
+
 
     }
 }

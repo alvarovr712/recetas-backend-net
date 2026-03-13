@@ -7,5 +7,8 @@ namespace RecetasAPINet.Repositories
         Task AddRangeAsync(List<Step> steps);
         Task<List<Step>> GetByRecipeIdAsync(Guid recipeId);
 
+        Task DeleteByRecipeIdAsync(Guid recipeId);
+
+
     }
 }

@@ -27,5 +27,13 @@ namespace RecetasAPINet.Repositories
                 .ToListAsync();
         }
 
+        public async Task DeleteByRecipeIdAsync(Guid recipeId)
+        {
+            var steps = _context.Steps.Where(s => s.RecipeId == recipeId);
+            _context.Steps.RemoveRange(steps);
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using RecetasAPINet.DTOs;
 using RecetasAPINet.Services;
 
 namespace RecetasAPINet.Controllers
@@ -163,9 +164,49 @@ namespace RecetasAPINet.Controllers
             return Ok(recetas);
         }
 
+        [HttpPut("editar")]
+        public async Task<IActionResult> EditarReceta([FromBody] UpdateRecipeDTO dto)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
+                               ?? User.FindFirst("id");
 
+            if (userIdClaim == null)
+                return Unauthorized("No se pudo obtener el ID del usuario del token");
 
+            Guid userId = Guid.Parse(userIdClaim.Value);
 
+            try
+            {
+                var updatedRecipe = await _recipeService.EditarRecetaAsync(dto, userId);
+                return Ok(updatedRecipe);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> EliminarReceta(Guid id)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
+                               ?? User.FindFirst("id");
+
+            if (userIdClaim == null)
+                return Unauthorized("No se pudo obtener el ID del usuario del token");
+
+            Guid userId = Guid.Parse(userIdClaim.Value);
+
+            try
+            {
+                await _recipeService.EliminarRecetaAsync(id, userId);
+                return Ok(new { message = "Receta eliminada correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
     }
 }

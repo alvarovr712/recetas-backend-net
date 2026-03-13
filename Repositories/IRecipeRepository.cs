@@ -12,6 +12,7 @@ namespace RecetasAPINet.Repositories
         
         Task<List<Recipe>> searchByTitleOrDescriptionAsync(string filtro);
 
-
+        Task<Recipe> UpdateAsync(Recipe recipe);
+        Task DeleteAsync(Recipe recipe);
     }
 }

@@ -5,6 +5,7 @@ using RecetasAPINet.Repositories;
 
 using RecetasAPINet.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
+using RecetasAPINet.DTOs;
 
 namespace RecetasAPINet.Services
 {
@@ -23,9 +24,13 @@ namespace RecetasAPINet.Services
 
         private readonly ILogRepository _logRepository;
 
+        private readonly IImageService _imageService;
+
+
+
         public RecipeService(RecetasDbContext context, IRecipeRepository recipeRepo, IRecipeIngredientRepository recipeIngredientRepo,
         IStepRepository stepRepo, IUserRepository userRepo, IUserFavoriteRepository userFavoriteRepo, IIngredientRepository ingredientRepo,
-        ILogRepository logRepository)
+        ILogRepository logRepository, IImageService imageService)
         {
             _context = context;
             _recipeRepo = recipeRepo;
@@ -35,6 +40,7 @@ namespace RecetasAPINet.Services
             _userFavoriteRepo = userFavoriteRepo;
             _ingredientRepo = ingredientRepo;
             _logRepository = logRepository;
+            _imageService = imageService;
 
         }
 
@@ -42,7 +48,7 @@ namespace RecetasAPINet.Services
         {
 
             var user = await _userRepo.GetByIdAsync(userId);
-            if(user == null)
+            if (user == null)
                 throw new Exception("Usuario no encontrado");
 
             await _logRepository.AddAsync(new Log
@@ -82,7 +88,7 @@ namespace RecetasAPINet.Services
 
             await _recipeIngredientRepo.AddRangeAsync(ingredients);
 
-            var steps = request.RecipeSteps.Select(item => new Step
+            var steps = request.Steps.Select(item => new Step
             {
                 Id = Guid.NewGuid(),
                 RecipeId = recipe.Id,
@@ -129,9 +135,6 @@ namespace RecetasAPINet.Services
                 .ToList();
         }
 
-
-
-
         public async Task<RecipeDetailDto?> GetRecipeDetailAsync(Guid recipeId, Guid userId)
         {
             // 1. Buscar la receta
@@ -168,6 +171,7 @@ namespace RecetasAPINet.Services
             dto.Ingredients = ingredients
                 .Select(i => new RecipeIngredientDto
                 {
+                    IngredientId = i.IngredientId,
                     Name = i.Ingredient?.Name ?? string.Empty,
                     Quantity = i.Quantity.ToString(),
                     Unit = i.Unit ?? string.Empty
@@ -221,9 +225,6 @@ namespace RecetasAPINet.Services
                 })
                 .ToList();
         }
-
-
-
 
         public async Task<bool> ToggleFavoriteAsync(Guid userId, Guid recipeId)
         {
@@ -508,11 +509,185 @@ namespace RecetasAPINet.Services
                 .ToList();
         }
 
+        public async Task<Recipe> EditarRecetaAsync(UpdateRecipeDTO request, Guid userId)
+        {
+            if (string.IsNullOrWhiteSpace(request.Id) || !Guid.TryParse(request.Id, out var recipeId))
+                throw new Exception($"El ID de la receta '{request.Id}' no es un GUID válido.");
 
+            var recipe = await _recipeRepo.GetByIdAsync(recipeId);
+            if (recipe == null)
+                throw new Exception($"No se encontró la receta con ID {recipeId}");
 
+            if (recipe.UserId != userId)
+                throw new Exception("No tienes permiso para editar esta receta");
 
+            string? oldImageUrl = recipe.Image;
+            string? newImageUrl = null;
 
+            try
+            {
+                // ----------------------------------------------------
+                // 1. Campos básicos
+                // ----------------------------------------------------
+                if (!string.IsNullOrWhiteSpace(request.Title))
+                    recipe.Title = request.Title;
 
+                if (!string.IsNullOrWhiteSpace(request.Description))
+                    recipe.Description = request.Description;
+
+                if (!string.IsNullOrWhiteSpace(request.Type) &&
+                    Enum.TryParse<RecipeType>(request.Type, true, out var parsedType))
+                {
+                    recipe.Type = parsedType;
+                }
+
+                if (request.PrepTime.HasValue)
+                    recipe.PrepTime = request.PrepTime.Value;
+
+                if (request.Servings.HasValue)
+                    recipe.Servings = request.Servings.Value;
+
+                // ----------------------------------------------------
+                // 2. Imagen principal
+                if (!string.IsNullOrWhiteSpace(request.Image))
+                {
+                    recipe.Image = request.Image;
+                }
+
+                recipe.UpdatedAt = DateTime.UtcNow;
+
+                // ----------------------------------------------------
+                // 3. Ingredientes (reemplazar todos)
+                // ----------------------------------------------------
+                if (request.Ingredients != null)
+                {
+                    await _recipeIngredientRepo.DeleteByRecipeIdAsync(recipe.Id);
+
+                    var newIngredients = new List<RecipeIngredient>();
+                    foreach (var ingDto in request.Ingredients)
+                    {
+                        if (Guid.TryParse(ingDto.IngredientId, out var ingGuid))
+                        {
+                            // Convertir cantidad a double de forma segura (usando punto como separador decimal)
+                            double.TryParse(ingDto.Quantity?.Replace(',', '.'), 
+                                System.Globalization.NumberStyles.Any, 
+                                System.Globalization.CultureInfo.InvariantCulture, 
+                                out var quantity);
+
+                            newIngredients.Add(new RecipeIngredient
+                            {
+                                Id = Guid.NewGuid(),
+                                RecipeId = recipe.Id,
+                                IngredientId = ingGuid,
+                                Quantity = quantity,
+                                Unit = ingDto.Unit ?? string.Empty
+                            });
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrWhiteSpace(ingDto.IngredientId))
+                                throw new Exception($"El ID del ingrediente '{ingDto.IngredientId}' no es un GUID válido.");
+                        }
+                    }
+
+                    if (newIngredients.Any())
+                        await _recipeIngredientRepo.AddRangeAsync(newIngredients);
+                }
+
+                // ----------------------------------------------------
+                // 4. Pasos (reemplazar todos)
+                // ----------------------------------------------------
+                if (request.Steps != null)
+                {
+                    // 4.1 Obtener pasos antiguos
+                    var oldSteps = await _stepRepo.GetByRecipeIdAsync(recipe.Id);
+
+                    // 4.2 Calcular qué imágenes de pasos NO se reutilizan en los nuevos pasos
+                    var newStepImages = request.Steps
+                        .Where(s => !string.IsNullOrEmpty(s.ImageStep))
+                        .Select(s => s.ImageStep!)
+                        .ToHashSet();
+
+                    foreach (var step in oldSteps)
+                    {
+                        if (!string.IsNullOrEmpty(step.Image) && !newStepImages.Contains(step.Image))
+                            _imageService.DeleteImage(step.Image);
+                    }
+
+                    // 4.3 Borrar pasos antiguos
+                    await _stepRepo.DeleteByRecipeIdAsync(recipe.Id);
+
+                    // 4.4 Insertar nuevos pasos
+                    var newSteps = request.Steps
+                        .Where(s => !string.IsNullOrWhiteSpace(s.Instruction))
+                        .Select((s, index) => new Step
+                        {
+                            Id = Guid.NewGuid(),
+                            RecipeId = recipe.Id,
+                            StepOrder = s.StepOrder ?? (index + 1),
+                            Instruction = s.Instruction ?? string.Empty,
+                            Image = s.ImageStep
+                        }).ToList();
+
+                    if (newSteps.Any())
+                        await _stepRepo.AddRangeAsync(newSteps);
+                }
+
+                // ----------------------------------------------------
+                // 5. Guardar cambios de la receta
+                // ----------------------------------------------------
+                await _recipeRepo.UpdateAsync(recipe);
+
+                // ----------------------------------------------------
+                // 6. Borrar imagen principal antigua si se subió imagen nueva
+                // ----------------------------------------------------
+                if (!string.IsNullOrEmpty(oldImageUrl) && recipe.Image != oldImageUrl)
+                {
+                    _imageService.DeleteImage(oldImageUrl);
+                }
+
+                return recipe;
+            }
+            catch
+            {
+                // Si falló algo después de subir la nueva imagen → borrarla
+                if (newImageUrl != null)
+                    _imageService.DeleteImage(newImageUrl);
+
+                throw;
+            }
+        }
+
+        public async Task<bool> EliminarRecetaAsync(Guid recipeId, Guid userId)
+        {
+            var recipe = await _recipeRepo.GetByIdAsync(recipeId);
+            if (recipe == null)
+                throw new Exception("Receta no encontrada");
+
+            if (recipe.UserId != userId)
+                throw new Exception("No tienes permiso para eliminar esta receta");
+
+            // 1. Borrar pasos e imágenes de los pasos
+            var steps = await _stepRepo.GetByRecipeIdAsync(recipeId);
+            foreach (var step in steps)
+            {
+                if (!string.IsNullOrEmpty(step.Image))
+                    _imageService.DeleteImage(step.Image);
+            }
+            await _stepRepo.DeleteByRecipeIdAsync(recipeId);
+
+            // 2. Borrar ingredientes
+            await _recipeIngredientRepo.DeleteByRecipeIdAsync(recipeId);
+
+            // 3. Borrar imagen principal
+            if (!string.IsNullOrEmpty(recipe.Image))
+                _imageService.DeleteImage(recipe.Image);
+
+            // 4. Borrar receta
+            await _recipeRepo.DeleteAsync(recipe);
+
+            return true;
+        }
 
     }
 }

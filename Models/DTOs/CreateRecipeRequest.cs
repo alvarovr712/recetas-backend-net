@@ -1,18 +1,20 @@
-public class CreateRecipeRequest
+namespace RecetasAPINet.DTOs
 {
-    public string Title { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
+    public class CreateRecipeRequest
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
-    public string Type { get; set; } = string.Empty;
-    public int PrepTime { get; set; }
+        public string Type { get; set; } = string.Empty;
+        public int PrepTime { get; set; }
 
-    // Si no lo envían, será 4 por defecto
-    public int Servings { get; set; } = 4;
+        public int Servings { get; set; } = 4;
 
-    public string Image { get; set; } = string.Empty;
+        public string Image { get; set; } = string.Empty;
 
-    public List<CreateRecipeIngredientDto> Ingredients { get; set; } = new();
-    public List<CreateRecipeStepDto> RecipeSteps { get; set; } = new();
+        public List<CreateRecipeIngredientDto> Ingredients { get; set; } = new();
+        public List<CreateRecipeStepDto> Steps { get; set; } = new();
+    }
 }
 
 public class CreateRecipeIngredientDto

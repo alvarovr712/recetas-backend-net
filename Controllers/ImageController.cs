@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
 using RecetasAPINet.Services;
 
@@ -10,9 +9,8 @@ namespace RecetasAPINet.Controllers
     public class ImageController : ControllerBase
     {
         private readonly IImageService _imageService;
-    
 
-    public ImageController ( IImageService imageService)
+        public ImageController(IImageService imageService)
         {
             _imageService = imageService;
         }
@@ -21,8 +19,14 @@ namespace RecetasAPINet.Controllers
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
             var url = await _imageService.SaveImageAsync(file);
-            return Ok(new {url});
+            return Ok(new { url });
         }
 
+        [HttpDelete("delete")]
+        public IActionResult DeleteImage([FromQuery] string url)
+        {
+            _imageService.DeleteImage(url);
+            return Ok();
+        }
     }
 }

@@ -6,6 +6,8 @@ using RecetasAPINet.Services;
 using RecetasAPINet.Security;
 using RecetasAPINet.Extensions;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Base de datos (DbContext + enums + snake_case)
