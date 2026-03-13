@@ -1,11 +1,11 @@
 ﻿<Project>
   <ItemGroup>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\bb6c9b6c-f555-4bfe-8197-485b412e1962.jpg))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\0480a813-24ae-4606-bb61-bf1207c4c8f9.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>recetasAPINet</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/recetasAPINet</BasePath>
-      <RelativePath>ImageRecipes/bb6c9b6c-f555-4bfe-8197-485b412e1962.jpg</RelativePath>
+      <RelativePath>ImageRecipes/0480a813-24ae-4606-bb61-bf1207c4c8f9.jpg</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>
       <AssetRole>Primary</AssetRole>
@@ -14,14 +14,14 @@
       <AssetTraitValue></AssetTraitValue>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\bb6c9b6c-f555-4bfe-8197-485b412e1962.jpg))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\0480a813-24ae-4606-bb61-bf1207c4c8f9.jpg))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\c8a42066-30e3-4bff-ad03-9bc6a8708f1a.jpeg))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\3622223d-6c6a-40d2-acfb-92c43248285d.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>recetasAPINet</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/recetasAPINet</BasePath>
-      <RelativePath>ImageRecipes/c8a42066-30e3-4bff-ad03-9bc6a8708f1a.jpeg</RelativePath>
+      <RelativePath>ImageRecipes/3622223d-6c6a-40d2-acfb-92c43248285d.jpg</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>
       <AssetRole>Primary</AssetRole>
@@ -30,7 +30,23 @@
       <AssetTraitValue></AssetTraitValue>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\c8a42066-30e3-4bff-ad03-9bc6a8708f1a.jpeg))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\3622223d-6c6a-40d2-acfb-92c43248285d.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\adc9fab9-8b51-4333-9615-5ecdffb35d95.jpeg))">
+      <SourceType>Package</SourceType>
+      <SourceId>recetasAPINet</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/recetasAPINet</BasePath>
+      <RelativePath>ImageRecipes/adc9fab9-8b51-4333-9615-5ecdffb35d95.jpeg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageRecipes\adc9fab9-8b51-4333-9615-5ecdffb35d95.jpeg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ImageUsers\51ee1072-0df6-4240-ad2c-16eacca35dd1.png))">
       <SourceType>Package</SourceType>
