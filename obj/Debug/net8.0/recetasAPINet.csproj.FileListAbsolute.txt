@@ -120,3 +120,5 @@ C:\Users\alvar\Documentos\Aplicación Recetas\recetasAPINet\bin\Debug\net8.0\Mic
 C:\Users\alvar\Documentos\Aplicación Recetas\recetasAPINet\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\alvar\Documentos\Aplicación Recetas\recetasAPINet\obj\Debug\net8.0\recetasAPINet.sourcelink.json
 C:\Users\alvar\Documentos\Aplicación Recetas\recetasAPINet\bin\Debug\net8.0\recetasAPINet.staticwebassets.runtime.json
+C:\Users\alvar\Documentos\Aplicación Recetas\recetasAPINet\bin\Debug\net8.0\CloudinaryDotNet.dll
+C:\Users\alvar\Documentos\Aplicación Recetas\recetasAPINet\bin\Debug\net8.0\Newtonsoft.Json.dll

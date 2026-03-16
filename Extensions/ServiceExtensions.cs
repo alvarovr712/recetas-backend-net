@@ -9,10 +9,22 @@ namespace RecetasAPINet.Extensions
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, Microsoft.Extensions.Configuration.IConfiguration configuration)
         {
             // Hash
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+            // Cloudinary
+            var cloudName = configuration["CloudinarySettings:CloudName"];
+            var apiKey = configuration["CloudinarySettings:ApiKey"];
+            var apiSecret = configuration["CloudinarySettings:ApiSecret"];
+            
+            if(!string.IsNullOrEmpty(cloudName) && !string.IsNullOrEmpty(apiKey) && !string.IsNullOrEmpty(apiSecret))
+            {
+                var account = new CloudinaryDotNet.Account(cloudName, apiKey, apiSecret);
+                var cloudinary = new CloudinaryDotNet.Cloudinary(account);
+                services.AddSingleton(cloudinary);
+            }
 
             // Servicios
             services.AddScoped<IUserService, UserService>();

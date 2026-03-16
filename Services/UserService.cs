@@ -13,18 +13,20 @@ namespace RecetasAPINet.Services
     {
         private readonly RecetasDbContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly CloudinaryDotNet.Cloudinary _cloudinary;
 
         private readonly ILogRepository _logRepository;
 
         private readonly IUserRepository _userRepository;
 
         public UserService(RecetasDbContext context, IPasswordHasher<User> passwordHasher, ILogRepository logRepository,
-        IUserRepository userRepository)
+        IUserRepository userRepository, CloudinaryDotNet.Cloudinary cloudinary)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _logRepository = logRepository;
             _userRepository = userRepository;
+            _cloudinary = cloudinary;
         }
 
 
@@ -44,19 +46,21 @@ namespace RecetasAPINet.Services
             user.CreatedAt = DateTime.UtcNow;
             user.Enabled = true;
 
-            var folderPath = Path.Combine("wwwroot", "ImageUsers");
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
-
             if (imageFile != null)
             {
-                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
-                var filePath = Path.Combine(folderPath, fileName);
+                using var stream = imageFile.OpenReadStream();
+                var uploadParams = new CloudinaryDotNet.Actions.ImageUploadParams
+                {
+                    File = new CloudinaryDotNet.FileDescription(imageFile.FileName, stream),
+                    Folder = "ImageUsers"
+                };
 
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await imageFile.CopyToAsync(stream);
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
-                user.Image = $"/ImageUsers/{fileName}";
+                if (uploadResult.Error != null)
+                    throw new Exception(uploadResult.Error.Message);
+
+                user.Image = uploadResult.SecureUrl.ToString();
             }
 
 
@@ -137,25 +141,33 @@ namespace RecetasAPINet.Services
             if (dto.Image != null)
             {
                 // 1. Borrar imagen anterior si existe
-                if (!string.IsNullOrEmpty(user.Image))
+                if (!string.IsNullOrEmpty(user.Image) && user.Image.Contains("cloudinary"))
                 {
-                    var oldImagePath = Path.Combine("wwwroot", user.Image.TrimStart('/'));
-                    if (File.Exists(oldImagePath))
-                        File.Delete(oldImagePath);
+                    try 
+                    {
+                        var uri = new Uri(user.Image);
+                        var segments = uri.Segments;
+                        var fileNameWithExtension = segments.Last();
+                        var publicId = Path.GetFileNameWithoutExtension(fileNameWithExtension);
+                        var deletionParams = new CloudinaryDotNet.Actions.DeletionParams($"ImageUsers/{publicId}");
+                        _cloudinary.Destroy(deletionParams);
+                    } catch {}
                 }
 
                 // 2. Guardar la nueva imagen
-                var folderPath = Path.Combine("wwwroot", "ImageUsers");
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
+                using var stream = dto.Image.OpenReadStream();
+                var uploadParams = new CloudinaryDotNet.Actions.ImageUploadParams
+                {
+                    File = new CloudinaryDotNet.FileDescription(dto.Image.FileName, stream),
+                    Folder = "ImageUsers"
+                };
 
-                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.Image.FileName)}";
-                var filePath = Path.Combine(folderPath, fileName);
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await dto.Image.CopyToAsync(stream);
+                if (uploadResult.Error != null)
+                    throw new Exception(uploadResult.Error.Message);
 
-                user.Image = $"/ImageUsers/{fileName}";
+                user.Image = uploadResult.SecureUrl.ToString();
             }
 
             // Guardar cambios usando el repositorio

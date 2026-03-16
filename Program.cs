@@ -15,13 +15,14 @@ builder.Services.AddDatabase(builder.Configuration);
 
 builder.Services.AddHttpContextAccessor();
 // Servicios de la aplicación (UserService, AuthService, JwtService, PasswordHasher)
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 
 // Controllers + JSON
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
     });
 
 // Extensiones de infraestructura
