@@ -4,6 +4,7 @@ using RecetasAPINet.Data;
 using RecetasAPINet.Models;
 using RecetasAPINet.Services;
 using RecetasAPINet.Security;
+using RecetasAPINet.Middlewares;
 using RecetasAPINet.Extensions;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -47,6 +48,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowAngular");
 app.UseAuthentication();
+app.UseMiddleware<SessionValidationMiddleware>();
 app.UseAuthorization();
 app.UseSwaggerDocumentation(app.Environment);
 app.UseStaticFiles();

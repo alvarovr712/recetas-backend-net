@@ -5,7 +5,7 @@ namespace RecetasAPINet.Security
 {
     public interface IJwtService
     {
-        string GenerateToken(User user);
+        string GenerateToken(User user, Guid sessionId);
         TokenInfoDTO ValidateToken(string token);
     }
 }

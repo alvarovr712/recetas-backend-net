@@ -46,9 +46,9 @@ namespace RecetasAPINet.Data
             modelBuilder.Entity<RecipeIngredient>()
                 .ToTable("recipe_ingredients");
 
-            // Tabla steps
-            modelBuilder.Entity<Step>()
-                .ToTable("steps");
+            // Tabla sessions
+            modelBuilder.Entity<Session>()
+                .ToTable("sessions");
 
             base.OnModelCreating(modelBuilder);
         }

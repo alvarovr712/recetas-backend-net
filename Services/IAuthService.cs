@@ -5,8 +5,9 @@ namespace RecetasAPINet.Services
 {
     public interface IAuthService
     {
-        Task<User> Login(LoginRequest loginRequest);
+        Task<LoginResponse> Login(LoginRequest loginRequest);
         Task Logout();
         Task<TokenInfoDTO> TokenInfo(string token);
+        Task<bool> ValidateSessionAsync(Guid sessionId);
     }
 }

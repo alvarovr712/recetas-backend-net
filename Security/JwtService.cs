@@ -18,14 +18,15 @@ namespace RecetasAPINet.Security
             _settings = settings.Value;
         }
 
-        public string GenerateToken(User user)
+        public string GenerateToken(User user, Guid sessionId)
         {
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim("username", user.Username),
                 new Claim("role", user.Role.ToString()),
-                new Claim("image", user.Image ?? string.Empty)
+                new Claim("image", user.Image ?? string.Empty),
+                new Claim("sid", sessionId.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Key));
@@ -35,7 +36,7 @@ namespace RecetasAPINet.Security
                 issuer: _settings.Issuer,
                 audience: _settings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_settings.ExpiresInMinutes),
+                expires: DateTime.UtcNow.AddDays(7), // Sesión de 7 días
                 signingCredentials: creds
             );
 
@@ -66,6 +67,7 @@ namespace RecetasAPINet.Security
                           ?? principal.FindFirst(ClaimTypes.Role)?.Value;
 
             var imageString = principal.FindFirst("image")?.Value ?? string.Empty;
+            var sessionIdString = principal.FindFirst("sid")?.Value ?? string.Empty;
 
             return new TokenInfoDTO
             {
@@ -73,6 +75,7 @@ namespace RecetasAPINet.Security
                 Username = username ?? string.Empty,
                 Role = Enum.TryParse<Role>(roleString, true, out var role) ? role : Role.User,
                 Image = imageString,
+                SessionId = sessionIdString,
                 Expires = validatedToken.ValidTo
             };
         }

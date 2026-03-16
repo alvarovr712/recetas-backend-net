@@ -28,19 +28,17 @@ namespace RecetasAPINet.Controllers
         {
             try
             {
-                var user = await _authService.Login(loginRequest);
-
-                var token = _jwtService.GenerateToken(user);
+                var loginResponse = await _authService.Login(loginRequest);
 
                 var cookieOptions = new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.None,
-                    Expires = DateTime.UtcNow.AddMinutes(60)
+                    Expires = DateTime.UtcNow.AddDays(7)
                 };
 
-                Response.Cookies.Append("auth_token", token, cookieOptions);
+                Response.Cookies.Append("auth_token", loginResponse.Token, cookieOptions);
                 return Ok("Login correcto");
             }
             catch (Exception ex)
@@ -75,14 +73,22 @@ namespace RecetasAPINet.Controllers
                 return Unauthorized("No hay token");
             try
             {
-
                 var info = await _authService.TokenInfo(token);
                 return Ok(info);
-
             }
             catch (Exception ex)
             {
-                return Unauthorized($"Token Inválido: {ex.Message}");
+                // Si hay error (sesión revocada, expirada, etc), limpiamos la cookie
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTime.UtcNow.AddDays(-1)
+                };
+                Response.Cookies.Append("auth_token", "", cookieOptions);
+                
+                return Unauthorized($"Sesión terminada: {ex.Message}");
             }
         }
 
