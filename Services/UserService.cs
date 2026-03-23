@@ -6,6 +6,7 @@ using RecetasAPINet.Models;
 using RecetasAPINet.DTOs;
 using RecetasAPINet.Repositories;
 using System.Security.Claims;
+using RecetasAPINet.Enums;
 
 namespace RecetasAPINet.Services
 {
@@ -172,6 +173,88 @@ namespace RecetasAPINet.Services
 
             // Guardar cambios usando el repositorio
             return await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task<PagedResponseDTO<UserDTO>> GetAllAsync(Guid requesterId, int page, int pageSize)
+        {
+            // 1) Buscar al usuario que hace la petición
+            var requester = await _userRepository.GetByIdAsync(requesterId);
+
+            if (requester == null)
+                throw new UnauthorizedAccessException("Usuario no encontrado");
+
+            // 2) Validar rol
+            if (requester.Role != Role.Admin)
+                throw new UnauthorizedAccessException("Acceso denegado. Se requiere rol Admin.");
+
+            // 3) Obtener todos los usuarios con paginación
+            var query = _context.Users.AsQueryable();
+            var totalCount = await query.CountAsync();
+
+            List<User> users;
+            if (pageSize == -1) // "Todos"
+            {
+                users = await query.ToListAsync();
+                pageSize = totalCount > 0 ? totalCount : 1;
+            }
+            else 
+            {
+                users = await query
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+            }
+
+            return new PagedResponseDTO<UserDTO>
+            {
+                Items = users.Select(u => new UserDTO
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Surnames = u.Surnames,
+                    Email = u.Email,
+                    Username = u.Username,
+                    CreatedAt = u.CreatedAt,
+                    Image = u.Image,
+                    Role = u.Role.ToString(),
+                    Enabled = u.Enabled
+                }).ToList(),
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
+        public async Task<UserDTO> ToggleEnabledAsync(Guid requesterId, Guid targetUserId)
+        {
+            
+            var requester = await _userRepository.GetByIdAsync(requesterId);
+
+            if (requester == null)
+                throw new UnauthorizedAccessException("Usuario no encontrado");
+
+            if (requester.Role != Role.Admin)
+                throw new UnauthorizedAccessException("Acceso denegado. Se requiere rol Admin.");
+
+            
+            var updatedUser = await _userRepository.ToggleEnabledAsync(targetUserId);
+
+            if (updatedUser == null)
+                throw new Exception("El usuario no existe");
+
+           
+            return new UserDTO
+            {
+                Id = updatedUser.Id,
+                Name = updatedUser.Name,
+                Surnames = updatedUser.Surnames,
+                Email = updatedUser.Email,
+                Username = updatedUser.Username,
+                CreatedAt = updatedUser.CreatedAt,
+                Image = updatedUser.Image,
+                Role = updatedUser.Role.ToString(),
+                Enabled = updatedUser.Enabled
+            };
         }
 
     }

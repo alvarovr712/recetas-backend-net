@@ -50,6 +50,25 @@ namespace RecetasAPINet.Repositories
             return _context.Users.CountAsync(u => u.CreatedAt >= start && u.CreatedAt < end);
         }
 
+        public async Task<List<User>> GetAllAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
+        public async Task<User?> ToggleEnabledAsync(Guid userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if(user == null)
+                return null;
+            
+            user.Enabled = !user.Enabled;
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
 
 
 

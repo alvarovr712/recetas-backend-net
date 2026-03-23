@@ -33,6 +33,11 @@ namespace RecetasAPINet.Services
 
             }
 
+            if (!user.Enabled)
+            {
+                throw new Exception("Tu cuenta está deshabilitada");
+            }
+
             var result = _passwordHasher.VerifyHashedPassword(user, user.Password, loginRequest.Password);
 
             if(result == PasswordVerificationResult.Failed)

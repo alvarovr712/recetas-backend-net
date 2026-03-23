@@ -71,6 +71,62 @@ namespace RecetasAPINet.Controllers
             return Ok(updatedUser);
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 5)
+        {
+            // 1) Obtener ID del usuario desde el JWT
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
+                               ?? User.FindFirst("id");
+
+            if (userIdClaim == null)
+                return Unauthorized("No se pudo obtener el ID del usuario del token");
+
+            Guid userId = Guid.Parse(userIdClaim.Value);
+
+            try
+            {
+                // 2) Pasar el userId al servicio
+                var pagedResponse = await iUserService.GetAllAsync(userId, page, pageSize);
+                return Ok(pagedResponse);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("toggle-enabled/{id}")]
+        public async Task<IActionResult> ToggleEnabled(Guid id)
+        {
+            
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)
+                               ?? User.FindFirst("id");
+
+            if (userIdClaim == null)
+                return Unauthorized("No se pudo obtener el ID del usuario del token");
+
+            Guid requesterId = Guid.Parse(userIdClaim.Value);
+
+            try
+            {
+              
+                var updatedUser = await iUserService.ToggleEnabledAsync(requesterId,id);
+                return Ok(updatedUser);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(403, new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+
+
 
 
 

@@ -11,6 +11,10 @@ namespace RecetasAPINet.Repositories
         Task<int> CountCreatedSinceAsync(DateTime date);
 
         Task<int> CountCreatedBetweenAsync(DateTime start,DateTime end);
+
+        Task<List<User>> GetAllAsync();
+
+        Task<User?> ToggleEnabledAsync(Guid userId);
         
     }
 }
