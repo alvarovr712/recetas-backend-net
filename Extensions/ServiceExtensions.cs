@@ -33,6 +33,7 @@ namespace RecetasAPINet.Extensions
             services.AddScoped<IIngredientService, IngredientService>();
             services.AddScoped<IRecipeService,RecipeService>();
             services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IDashboardService,DashboardService>();
 
             //Repositorios
             services.AddScoped<IIngredientRepository, IngredientRepository>();
@@ -42,6 +43,7 @@ namespace RecetasAPINet.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserFavoriteRepository, UserFavoriteRepository>();
             services.AddScoped<ILogRepository,LogRepository>();
+            services.AddScoped<ISessionRepository,SessionRepository>();
 
             return services;
         }

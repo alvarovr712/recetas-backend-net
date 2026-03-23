@@ -1,3 +1,4 @@
+using RecetasAPINet.DTOs;
 using RecetasAPINet.Models;
 namespace RecetasAPINet.Repositories
 {
@@ -14,5 +15,11 @@ namespace RecetasAPINet.Repositories
 
         Task<Recipe> UpdateAsync(Recipe recipe);
         Task DeleteAsync(Recipe recipe);
+
+        Task<int> CountAllAsync();
+        Task<int> CountCreatedBetweenAsync(DateTime start, DateTime end);
+
+        Task<List<ActiveUserDTO>> GetTopUsersByRecipesAsync(int top);
+
     }
 }

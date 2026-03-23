@@ -35,6 +35,21 @@ namespace RecetasAPINet.Repositories
             return user;
         }
 
+        public Task<int> CountAllAsync()
+        {
+            return _context.Users.CountAsync();
+        }
+
+        public Task<int> CountCreatedSinceAsync(DateTime date)
+        {
+            return _context.Users.CountAsync(u=> u.CreatedAt >= date);
+        }
+
+        public Task<int> CountCreatedBetweenAsync(DateTime start, DateTime end)
+        {
+            return _context.Users.CountAsync(u => u.CreatedAt >= start && u.CreatedAt < end);
+        }
+
 
 
 

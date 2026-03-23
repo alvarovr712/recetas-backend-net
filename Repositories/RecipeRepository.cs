@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RecetasAPINet.Data;
+using RecetasAPINet.DTOs;
 using RecetasAPINet.Models;
 namespace RecetasAPINet.Repositories
 {
@@ -68,6 +69,33 @@ namespace RecetasAPINet.Repositories
         {
             _context.Recipes.Remove(recipe);
             await _context.SaveChangesAsync();
+        }
+
+        public Task<int> CountAllAsync()
+        {
+            return _context.Recipes.CountAsync();
+        }
+
+        public Task<int> CountCreatedBetweenAsync(DateTime start,DateTime end)
+        {
+            return _context.Recipes.CountAsync(r => r.CreatedAt >= start && r.CreatedAt < end);
+        }
+
+        public async Task<List<ActiveUserDTO>> GetTopUsersByRecipesAsync(int top)
+        {
+            return await _context.Recipes
+            .GroupBy(r => new {r.UserId, r.User.Name, r.User.Surnames, r.User.Image})
+            .Select(g => new ActiveUserDTO
+            {
+                UserId = g.Key.UserId,
+                Name = g.Key.Name,
+                Surname = g.Key.Surnames,
+                RecetasCreadas = g.Count(),
+                ImageUrl = g.Key.Image
+            })
+            .OrderByDescending(x => x.RecetasCreadas)
+            .Take(top)
+            .ToListAsync();
         }
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RecetasAPINet.Data;
+using RecetasAPINet.DTOs;
 using RecetasAPINet.Models;
 
 namespace RecetasAPINet.Repositories
@@ -36,6 +37,20 @@ namespace RecetasAPINet.Repositories
             return await _context.Logs
                 .Where(l => l.UserId == userId && l.Action == "CrearReceta")
                 .CountAsync();
+        }
+
+        public async Task<List<DailyActivityDTO>> CountByDayAsync(DateTime start,DateTime end)
+        {
+            return await _context.Logs
+            .Where(l => l.CreatedAt >= start && l.CreatedAt < end)
+            .GroupBy(l => l.CreatedAt.Date)
+            .Select (g => new DailyActivityDTO
+            {
+                Fecha = g.Key,
+                Valor = g.Count()
+            })
+            .OrderBy(f => f.Fecha)
+            .ToListAsync();
         }
     }
 }

@@ -1,3 +1,4 @@
+using RecetasAPINet.DTOs;
 using RecetasAPINet.Models;
 
 namespace RecetasAPINet.Repositories
@@ -9,5 +10,7 @@ namespace RecetasAPINet.Repositories
         Task SaveChangesAsync();
 
         Task<int> CountRecipeCreationsAsync(Guid userId);
+
+        Task<List<DailyActivityDTO>> CountByDayAsync(DateTime start,DateTime end);
     }
 }
